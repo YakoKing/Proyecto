@@ -6,4 +6,9 @@
     </style>
 
     <style name="Theme.PlayMatch" parent="Base.Theme.PlayMatch" />
+    <style name="circuloAvatar">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
 </resources>

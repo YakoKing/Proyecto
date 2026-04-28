@@ -4,4 +4,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="neon_green">#39FF14</color>
     <color name="principal">#202732</color>
+    <color name="camposPerfil">#00FF9C</color>
+    <color name="colorBotonPerfil">#6A5ACD</color>
+    <color name="colorHint">#888888</color>
 </resources>

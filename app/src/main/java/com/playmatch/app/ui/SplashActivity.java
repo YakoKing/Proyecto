@@ -5,11 +5,24 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.playmatch.app.ApiServicio.ApiServicio;
+import com.playmatch.app.ApiServicio.RetrofitCliente;
 import com.playmatch.app.R;
+import com.playmatch.app.entity.Partido;
+import com.playmatch.app.entity.Usuario;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class SplashActivity  extends AppCompatActivity {
 
@@ -62,6 +75,26 @@ public class SplashActivity  extends AppCompatActivity {
         };
 
         handler.postDelayed(runnable,100);
+
+        RetrofitCliente.getApiServicio().getUsuarios().enqueue(new Callback<List<Usuario>>() {
+            @Override
+            public void onResponse(Call<List<Usuario>> call, Response<List<Usuario>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    for (Usuario u : response.body()) {
+                        Log.d("USUARIOS", "ID: " + u.getId() + " | Nombre: " + u.getNombre() + " | Email: " + u.getEmail());
+                    }
+                } else {
+                    Log.e("USUARIOS", "Respuesta vacía o error HTTP: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Usuario>> call, Throwable t) {
+                Log.e("USUARIOS", "Error de conexión: " + t.getMessage());
+            }
+        });
+
+
     }
 
 

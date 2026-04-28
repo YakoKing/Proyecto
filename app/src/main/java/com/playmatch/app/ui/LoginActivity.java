@@ -1,5 +1,6 @@
 package com.playmatch.app.ui;
 
+import android.util.Log;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -10,8 +11,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.playmatch.app.ApiServicio.LoginRequest;
+import com.playmatch.app.ApiServicio.RetrofitCliente;
 import com.playmatch.app.R;
+import com.playmatch.app.entity.Usuario;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 
 public class LoginActivity  extends AppCompatActivity {
 
@@ -63,15 +73,50 @@ public class LoginActivity  extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+
                 /*con el objeto Intent hacemos la accion,primer parametro desde donde se ejecuta
                 segundo parametro donde queremos ir*/
-                Intent intent= new Intent(LoginActivity.this, HomeActivity.class);
+                /*Intent intent= new Intent(LoginActivity.this, HomeActivity.class);
 
                 //pasamos el nombre de usuario a la pantalla del home
                 String nombreUsuario=txtUsuario.getText().toString();
                 intent.putExtra("nombre_usuario",nombreUsuario);
                 startActivity(intent);
-                finish();
+                finish();*/
+
+
+
+                String nombreUsuario = txtUsuario.getText().toString();
+                String pass = txtContraseña.getText().toString();
+
+                RetrofitCliente.getApiServicio().login(new LoginRequest(nombreUsuario, pass)).enqueue(new Callback<Usuario>() {
+                    @Override
+                    public void onResponse(Call<Usuario> call, Response<Usuario> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            Usuario usuario = response.body();
+                            // Login correcto, navegar a Home
+
+                            //getSharedPreferences para guardar conffiiguracion de cada usuario
+                            getSharedPreferences("sesion", MODE_PRIVATE).edit()
+                                    .putInt("id", usuario.getId())
+                                    .putString("nombre", usuario.getNombre())
+                                    .putString("email", usuario.getEmail()).apply();
+
+                            Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                            intent.putExtra("nombre_usuario", usuario.getNombre());
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            Toast.makeText(LoginActivity.this, "Email o contraseña incorrectos", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Usuario> call, Throwable t) {
+                        Log.e("LOGIN_ERROR", t.getMessage(), t);
+                        Toast.makeText(LoginActivity.this, "Error de conexión", Toast.LENGTH_SHORT).show();
+                    }
+                });
 
             }
         });
