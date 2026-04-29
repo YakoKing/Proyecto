@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.playmatch.app.ApiServicio.LoginRequest;
@@ -32,6 +33,7 @@ public class LoginActivity  extends AppCompatActivity {
     private EditText txtContraseña;
     private EditText txtUsuario;
     private ImageView logoLogin , imgFondoLogin;
+    private TextView txtErrorLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +49,7 @@ public class LoginActivity  extends AppCompatActivity {
         txtUsuario=findViewById(R.id.txtUsuario);
         logoLogin=findViewById(R.id.logoLogin);
         imgFondoLogin=findViewById(R.id.imgFondoLogin);
+        txtErrorLogin=findViewById(R.id.txtErrorLogin);
 
         //Boton de instagram
         imgButtonInsta.setOnClickListener(new View.OnClickListener() {
@@ -89,6 +92,7 @@ public class LoginActivity  extends AppCompatActivity {
                 String nombreUsuario = txtUsuario.getText().toString();
                 String pass = txtContraseña.getText().toString();
 
+                txtErrorLogin.setVisibility(View.GONE);
                 RetrofitCliente.getApiServicio().login(new LoginRequest(nombreUsuario, pass)).enqueue(new Callback<Usuario>() {
                     @Override
                     public void onResponse(Call<Usuario> call, Response<Usuario> response) {
@@ -106,11 +110,12 @@ public class LoginActivity  extends AppCompatActivity {
                             intent.putExtra("nombre_usuario", usuario.getNombre());
                             startActivity(intent);
                             finish();
+                            //Login incorrecto de usuario o contraseña ->poner el texto visible
                         } else {
-                            Toast.makeText(LoginActivity.this, "Email o contraseña incorrectos", Toast.LENGTH_SHORT).show();
+                            txtErrorLogin.setVisibility(View.VISIBLE);
                         }
                     }
-
+                    
                     @Override
                     public void onFailure(Call<Usuario> call, Throwable t) {
                         Log.e("LOGIN_ERROR", t.getMessage(), t);

@@ -35,7 +35,8 @@
         android:layout_marginEnd="16dp"
         android:ems="10"
         android:inputType="text"
-        android:text="@string/usuario"
+        android:hint="@string/usuario"
+        android:textColorHint="@android:color/white"
         android:textColor="@android:color/white"
         android:backgroundTint="@color/principal"
         app:layout_constraintTop_toBottomOf="@id/logoLogin"
@@ -51,9 +52,10 @@
         android:layout_marginEnd="16dp"
         android:ems="10"
         android:inputType="textPassword"
-        android:text="@string/contrase_a"
-        android:textColor="@android:color/white"
+        android:hint="@string/contrase_a"
+        android:textColorHint="@android:color/white"
         android:backgroundTint="@color/principal"
+        android:textColor="@android:color/white"
         app:layout_constraintTop_toBottomOf="@id/txtUsuario"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -115,5 +117,25 @@
         app:layout_constraintTop_toBottomOf="@id/btnSignUp"
         app:layout_constraintStart_toEndOf="@id/imgButtonInsta"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/txtErrorLogin"
+        android:layout_width="390dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="center"
+        android:text="Error de nombre de usuario o contraseña"
+        android:textColor="#D32F2F"
+        android:visibility="gone"
+        android:drawableStart="@drawable/advertencia"
+        android:drawablePadding="8dp"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/imgFondoLogin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnSignUp"
+        app:layout_constraintVertical_bias="0.793" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
