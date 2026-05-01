@@ -10,10 +10,10 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:scaleType="centerCrop"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/fondo" />
 
 
@@ -31,14 +31,15 @@
         android:id="@+id/txtEmail"
         android:layout_width="0dp"
         android:layout_height="58dp"
-        android:layout_marginTop="24dp"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:backgroundTint="@color/principal"
         android:ems="10"
+        android:hint="@string/Correo_electronico"
         android:inputType="text"
-        android:text="@string/Correo_electronico"
         android:textColor="@android:color/white"
+        android:textColorHint="@android:color/white"
         app:layout_constraintEnd_toEndOf="@+id/imgFondoLogin"
         app:layout_constraintStart_toStartOf="@+id/imgFondoLogin"
         app:layout_constraintTop_toBottomOf="@+id/txtUsuario" />
@@ -52,7 +53,8 @@
         android:layout_marginEnd="16dp"
         android:ems="10"
         android:inputType="text"
-        android:text="@string/usuario"
+        android:hint="@string/usuario"
+        android:textColorHint="@android:color/white"
         android:textColor="@android:color/white"
         android:backgroundTint="@color/principal"
         app:layout_constraintTop_toBottomOf="@id/logoLogin"
@@ -64,21 +66,22 @@
         android:id="@+id/txtContraseña"
         android:layout_width="0dp"
         android:layout_height="58dp"
-        android:layout_marginTop="24dp"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:backgroundTint="@color/principal"
         android:ems="10"
+        android:hint="Contraseña"
         android:inputType="textPassword"
-        android:text="@string/contrase_a"
         android:textColor="@android:color/white"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textColorHint="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtEmail" />
 
     <Button
         android:id="@+id/btnLogin"
-        android:layout_width="0dp"
+        android:layout_width="379dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
@@ -89,6 +92,48 @@
         android:textColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txtContraseña" />
+        app:layout_constraintTop_toBottomOf="@+id/txtEdadRegistro" />
+
+    <EditText
+        android:id="@+id/txtPosicionFavorita"
+        android:layout_width="0dp"
+        android:layout_height="58dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:backgroundTint="@color/principal"
+        android:ems="10"
+        android:hint="Posicion favorita"
+        android:inputType="text"
+        android:textColor="@android:color/white"
+        android:textColorHint="@android:color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtContraseña" />
+
+    <EditText
+        android:id="@+id/txtEdadRegistro"
+        android:layout_width="0dp"
+        android:layout_height="58dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:ems="10"
+        android:inputType="number"
+        android:backgroundTint="@color/principal"
+        android:hint="Edad"
+        android:textColor="@android:color/white"
+        android:textColorHint="@android:color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtPosicionFavorita" />
+
+    <ImageButton
+        android:id="@+id/imageButton2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ocultar_contrasena"
+        tools:layout_editor_absoluteX="335dp"
+        tools:layout_editor_absoluteY="420dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
