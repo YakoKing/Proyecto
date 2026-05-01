@@ -27,7 +27,6 @@ import retrofit2.Response;
 
 public class LoginActivity  extends AppCompatActivity {
 
-
     private Button btnLogin;
     private Button btnSignUp;
     private ImageButton imgButtonInsta;
