@@ -33,6 +33,8 @@ public class HomeActivity extends AppCompatActivity {
     private RecyclerView recyclerPistas;
     FrameLayout contenedorFragments;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
