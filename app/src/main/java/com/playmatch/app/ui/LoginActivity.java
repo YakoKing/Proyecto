@@ -18,6 +18,7 @@ import com.playmatch.app.ApiServicio.LoginRequest;
 import com.playmatch.app.ApiServicio.RetrofitCliente;
 import com.playmatch.app.R;
 import com.playmatch.app.entity.Usuario;
+import com.playmatch.app.utils.SessionManager;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -106,13 +107,9 @@ public class LoginActivity  extends AppCompatActivity {
                     public void onResponse(Call<Usuario> call, Response<Usuario> response) {
                         if (response.isSuccessful() && response.body() != null) {
                             Usuario usuario = response.body();
-                            // Login correcto, navegar a Home
-
-                            //getSharedPreferences para guardar conffiiguracion de cada usuario
-                            getSharedPreferences("sesion", MODE_PRIVATE).edit()
-                                    .putInt("id", usuario.getId())
-                                    .putString("nombre", usuario.getNombre())
-                                    .putString("email", usuario.getEmail()).apply();
+                            // Login correcto, guardar sesión segura
+                            SessionManager.getInstance(LoginActivity.this)
+                                    .guardarSesion(usuario.getId(), usuario.getNombre(), usuario.getEmail());
 
                             Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                             intent.putExtra("nombre_usuario", usuario.getNombre());

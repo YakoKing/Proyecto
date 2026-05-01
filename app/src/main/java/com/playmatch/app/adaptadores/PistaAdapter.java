@@ -1,5 +1,8 @@
 package com.playmatch.app.adaptadores;
 
+import android.content.Context;
+import android.content.ContextWrapper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.playmatch.app.R;
 import com.playmatch.app.entity.Pista;
 import com.bumptech.glide.Glide;
+import com.playmatch.app.ui.HomeActivity;
 
 import java.util.List;
 
@@ -50,7 +54,14 @@ public class PistaAdapter extends RecyclerView.Adapter<PistaAdapter.PistaViewHol
         }
 
         holder.btnReservar.setOnClickListener(v -> {
-            //logica de reserva
+            Context context = v.getContext();
+            while (context instanceof ContextWrapper) {
+                if (context instanceof HomeActivity) {
+                    ((HomeActivity) context).abrirReserva(pista);
+                    return;
+                }
+                context = ((ContextWrapper) context).getBaseContext();
+            }
         });
     }
 

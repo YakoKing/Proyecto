@@ -11,12 +11,13 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.playmatch.app.ApiServicio.RetrofitCliente;
 import com.playmatch.app.R;
+import com.playmatch.app.utils.SessionManager;
 
 import java.util.Map;
 
@@ -32,6 +33,7 @@ public class AjustesFragment extends Fragment {
 
     private View btnEliminarCuenta;
 
+    private Button btnLogout;
 
     public AjustesFragment() {
         // Required empty public constructor
@@ -48,12 +50,28 @@ public class AjustesFragment extends Fragment {
         txtUserCorreo=view.findViewById(R.id.txtUserCorreo);
         tvUserName=view.findViewById(R.id.tvUserName);
         btnEliminarCuenta=view.findViewById(R.id.btnEliminarCuenta);
+        btnLogout=view.findViewById(R.id.btnLogout);
 
+
+        SessionManager sessionManager = SessionManager.getInstance(requireContext());
+        txtUserCorreo.setText(sessionManager.getEmail());
+        tvUserName.setText(sessionManager.getNombre());
         SharedPreferences preferences=requireActivity().getSharedPreferences("sesion", Context.MODE_PRIVATE);
         String email=preferences.getString("email","");
         String nombre=preferences.getString("nombre" , "");
         txtUserCorreo.setText(email);
         tvUserName.setText(nombre);
+
+        btnLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sessionManager.cerrarSesion();
+                // Volver a la pantalla de Login
+                Intent intent = new Intent(getActivity(), LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            }
+        });
 
         //Boton elimiinar cuenta
         btnEliminarCuenta.setOnClickListener(new View.OnClickListener() {

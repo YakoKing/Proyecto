@@ -15,6 +15,7 @@ import com.playmatch.app.ApiServicio.RetrofitCliente;
 import com.playmatch.app.R;
 import com.playmatch.app.entity.Partido;
 import com.playmatch.app.entity.Usuario;
+import com.playmatch.app.utils.SessionManager;
 
 import java.util.List;
 
@@ -56,10 +57,21 @@ public class SplashActivity  extends AppCompatActivity {
                 progreso=progreso+2;
                 barra.setProgress(progreso);
 
-                if (progreso<100){
-                    handler.postDelayed(this,100);
-                }else{
-                    Intent intent=new Intent(SplashActivity.this, LoginActivity.class);
+                if (progreso < 100) {
+                    handler.postDelayed(this, 100);
+                } else {
+                    // Comprobar si hay una sesión activa segura
+                    SessionManager sessionManager = SessionManager.getInstance(SplashActivity.this);
+
+                    Intent intent;
+                    if (sessionManager.estaLogueado()) {
+                        // Sesión activa, ir a Home
+                        intent = new Intent(SplashActivity.this, HomeActivity.class);
+                        intent.putExtra("nombre_usuario", sessionManager.getNombre());
+                    } else {
+                        // Sin sesión, ir a Login
+                        intent = new Intent(SplashActivity.this, LoginActivity.class);
+                    }
                     startActivity(intent);
                     finish();
                 }
