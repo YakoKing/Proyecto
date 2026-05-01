@@ -52,7 +52,6 @@ public class AjustesFragment extends Fragment {
         btnEliminarCuenta=view.findViewById(R.id.btnEliminarCuenta);
         btnLogout=view.findViewById(R.id.btnLogout);
 
-
         SessionManager sessionManager = SessionManager.getInstance(requireContext());
         txtUserCorreo.setText(sessionManager.getEmail());
         tvUserName.setText(sessionManager.getNombre());
