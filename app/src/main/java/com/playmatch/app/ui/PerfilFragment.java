@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.playmatch.app.ApiServicio.RetrofitCliente;
 import com.playmatch.app.R;
 import com.playmatch.app.entity.Usuario;
+import com.playmatch.app.utils.SessionManager;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -60,11 +61,8 @@ public class PerfilFragment extends Fragment {
         etCorreo = view.findViewById(R.id.etCorreo);
         txtNombreUsuario = view.findViewById(R.id.txtNombreUsuario);
 
-
-        //Fragment del login que almacena clave-valor
-        SharedPreferences preferences = requireActivity().getSharedPreferences("sesion", Context.MODE_PRIVATE);
-        int usuarioId = preferences.getInt("id", -1);
-
+        // Uso de SessionManager para obtener el ID de usuario de forma segura
+        int usuarioId = SessionManager.getInstance(requireContext()).getUsuarioId();
 
         if (usuarioId != -1) {
             cargarDatosUsuario(usuarioId);

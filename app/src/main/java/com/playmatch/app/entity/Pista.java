@@ -1,6 +1,8 @@
 package com.playmatch.app.entity;
 
-public class Pista {
+import java.io.Serializable;
+
+public class Pista implements Serializable {
     private int id;
     private String nombre;
     private String foto;
