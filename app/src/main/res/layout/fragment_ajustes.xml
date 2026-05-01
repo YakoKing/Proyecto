@@ -201,7 +201,7 @@
 
                 <!-- Eliminar cuenta -->
                 <LinearLayout
-                    android:id="@+id/btnDeleteAccount"
+                    android:id="@+id/btnEliminarCuenta"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
