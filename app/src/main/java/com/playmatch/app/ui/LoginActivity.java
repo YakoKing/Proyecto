@@ -1,5 +1,5 @@
 package com.playmatch.app.ui;
-
+//dfsdfsdfsdfsdfffsdfsdfsdfsdfsdfsdfdsfdssdffsddfs
 import android.util.Log;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -36,6 +36,10 @@ public class LoginActivity  extends AppCompatActivity {
     private ImageView logoLogin , imgFondoLogin;
     private TextView txtErrorLogin;
 
+    private ImageView imgErrorUsuario;
+
+    private ImageView imgErrorContraseña;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +55,8 @@ public class LoginActivity  extends AppCompatActivity {
         logoLogin=findViewById(R.id.logoLogin);
         imgFondoLogin=findViewById(R.id.imgFondoLogin);
         txtErrorLogin=findViewById(R.id.txtErrorLogin);
+        imgErrorContraseña=findViewById(R.id.imgErrorContraseña);
+        imgErrorUsuario=findViewById(R.id.imgErrorUsuario);
 
         //Boton de instagram
         imgButtonInsta.setOnClickListener(new View.OnClickListener() {
@@ -94,6 +100,8 @@ public class LoginActivity  extends AppCompatActivity {
                 String pass = txtContraseña.getText().toString();
 
                 txtErrorLogin.setVisibility(View.GONE);
+                imgErrorUsuario.setVisibility(View.INVISIBLE);
+                imgErrorContraseña.setVisibility(View.INVISIBLE);
                 RetrofitCliente.getApiServicio().login(new LoginRequest(nombreUsuario, pass)).enqueue(new Callback<Usuario>() {
                     @Override
                     public void onResponse(Call<Usuario> call, Response<Usuario> response) {
@@ -107,9 +115,11 @@ public class LoginActivity  extends AppCompatActivity {
                             intent.putExtra("nombre_usuario", usuario.getNombre());
                             startActivity(intent);
                             finish();
-                            //Login incorrecto de usuario o contraseña ->poner el texto visible
+                            //Login incorrecto de usuario o contraseña poner el texto visible e iconos fuera
                         } else {
                             txtErrorLogin.setVisibility(View.VISIBLE);
+                            imgErrorUsuario.setVisibility(View.VISIBLE);
+                            imgErrorContraseña.setVisibility(View.VISIBLE);
                         }
                     }
                     
