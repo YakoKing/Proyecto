@@ -56,17 +56,14 @@ public class AjustesFragment extends Fragment {
         SessionManager sessionManager = SessionManager.getInstance(requireContext());
         txtUserCorreo.setText(sessionManager.getEmail());
         tvUserName.setText(sessionManager.getNombre());
-        SharedPreferences preferences=requireActivity().getSharedPreferences("sesion", Context.MODE_PRIVATE);
-        String email=preferences.getString("email","");
-        String nombre=preferences.getString("nombre" , "");
-        txtUserCorreo.setText(email);
-        tvUserName.setText(nombre);
 
         SharedPreferences preferences=requireActivity().getSharedPreferences("sesion", Context.MODE_PRIVATE);
         String email=preferences.getString("email","");
         String nombre=preferences.getString("nombre" , "");
         txtUserCorreo.setText(email);
         tvUserName.setText(nombre);
+
+
 
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
