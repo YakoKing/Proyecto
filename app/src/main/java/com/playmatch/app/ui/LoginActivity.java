@@ -36,10 +36,10 @@ public class LoginActivity  extends AppCompatActivity {
     private EditText txtUsuario;
     private ImageView logoLogin , imgFondoLogin;
     private TextView txtErrorLogin;
-
     private ImageView imgErrorUsuario;
-
     private ImageView imgErrorContraseña;
+    private ImageButton btnVerContraseña;
+    private boolean contraseñaVisible=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +47,7 @@ public class LoginActivity  extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         //Enlazar las variables del xml con java
-        btnLogin=findViewById(R.id.btnLogin);
+        btnLogin=findViewById(R.id.btnCrearCuenta);
         btnSignUp=findViewById(R.id.btnSignUp);
         imgButtonInsta=findViewById(R.id.imgButtonInsta);
         imgButtonX=findViewById(R.id.imgButtonX);
@@ -58,6 +58,7 @@ public class LoginActivity  extends AppCompatActivity {
         txtErrorLogin=findViewById(R.id.txtErrorLogin);
         imgErrorContraseña=findViewById(R.id.imgErrorContraseña);
         imgErrorUsuario=findViewById(R.id.imgErrorUsuario);
+        btnVerContraseña=findViewById(R.id.btnVerContraseña);
 
         //Boton de instagram
         imgButtonInsta.setOnClickListener(new View.OnClickListener() {
@@ -77,6 +78,26 @@ public class LoginActivity  extends AppCompatActivity {
                 intent.setData(Uri.parse("https://x.com/MrYaKoSmG"));
                 startActivity(intent);
             }
+        });
+
+        //Boton ver/ocultar contraseña
+        btnVerContraseña.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (contraseñaVisible){
+                    txtContraseña.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                    btnVerContraseña.setImageResource(R.drawable.mostrar_contrasena);
+                    contraseñaVisible=false;
+                }else {
+                    txtContraseña.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                    btnVerContraseña.setImageResource(R.drawable.ocultar_contrasena);
+                    contraseñaVisible=true;
+                    }
+                    txtContraseña.setSelection(txtContraseña.getText().length());
+                }
+
+
         });
 
         //Boton de login
