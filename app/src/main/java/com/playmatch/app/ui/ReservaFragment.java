@@ -7,9 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,6 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
 import com.playmatch.app.R;
 import com.playmatch.app.entity.Pista;
 
@@ -27,9 +29,10 @@ public class ReservaFragment extends Fragment {
 
     private Pista pista;
     private TextView txtNombrePistaReserva;
+    private ImageView imgPistaReserva;
     private EditText etFecha, etHora;
-    private Spinner spinnerTipo;
-    private Button btnConfirmarReserva, btnCancelarReserva;
+    private AutoCompleteTextView autoCompleteTipo;
+    private Button btnConfirmarReserva, btnCancelarReserva, btnVolverAtras;
 
     public ReservaFragment() {
     }
@@ -56,22 +59,30 @@ public class ReservaFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_reserva, container, false);
 
         txtNombrePistaReserva = view.findViewById(R.id.txtNombrePistaReserva);
+        imgPistaReserva = view.findViewById(R.id.imgPistaReserva);
         etFecha = view.findViewById(R.id.etFecha);
         etHora = view.findViewById(R.id.etHora);
-        spinnerTipo = view.findViewById(R.id.spinnerTipo);
+        autoCompleteTipo = view.findViewById(R.id.autoCompleteTipo);
         btnConfirmarReserva = view.findViewById(R.id.btnConfirmarReserva);
         btnCancelarReserva = view.findViewById(R.id.btnCancelarReserva);
+        btnVolverAtras = view.findViewById(R.id.btnVolverAtras);
 
         if (pista != null) {
             txtNombrePistaReserva.setText(pista.getNombre());
+            // Cargar imagen de la pista
+            if (pista.getFoto() != null && !pista.getFoto().isEmpty()) {
+                Glide.with(this).load(pista.getFoto()).centerCrop()
+                        .placeholder(R.drawable.pista_ejemplo).into(imgPistaReserva);
+            } else {
+                imgPistaReserva.setImageResource(R.drawable.pista_ejemplo);
+            }
         }
 
-        // Configurar Spinner
+        // Configurar Dropdown Menu (antes Spinner)
         String[] tipos = {"Amistoso", "Competitivo", "Torneo"};
         if (getContext() != null) {
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, tipos);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spinnerTipo.setAdapter(adapter);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, tipos);
+            autoCompleteTipo.setAdapter(adapter);
         }
 
         // Date Picker
@@ -80,11 +91,19 @@ public class ReservaFragment extends Fragment {
         // Time Picker
         etHora.setOnClickListener(v -> mostrarTimePicker());
 
-        btnCancelarReserva.setOnClickListener(v -> {
-            if (getActivity() != null) {
-                getActivity().getSupportFragmentManager().popBackStack();
+        View.OnClickListener volver = v -> {
+            if (getActivity() instanceof HomeActivity) {
+                HomeActivity activity = (HomeActivity) getActivity();
+                activity.getSupportFragmentManager().popBackStack();
+                // Restaurar visibilidad en HomeActivity
+                activity.findViewById(R.id.recyclerPistas).setVisibility(View.VISIBLE);
+                activity.findViewById(R.id.contenedorFragments).setVisibility(View.GONE);
+                activity.findViewById(R.id.BarTop).setVisibility(View.VISIBLE);
             }
-        });
+        };
+
+        btnCancelarReserva.setOnClickListener(volver);
+        btnVolverAtras.setOnClickListener(volver);
 
         btnConfirmarReserva.setOnClickListener(v -> {
             // Aquí irá la lógica de llamada a la API en el futuro
