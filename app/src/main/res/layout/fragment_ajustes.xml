@@ -290,7 +290,7 @@
 
             <!-- Contactar soporte -->
             <LinearLayout
-                android:id="@+id/btnContactSupport"
+                android:id="@+id/btnContactoSupport"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"

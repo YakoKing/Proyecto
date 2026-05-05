@@ -30,8 +30,8 @@ public class AjustesFragment extends Fragment {
 
     private TextView txtUserCorreo;
     private  TextView tvUserName;
-
     private View btnEliminarCuenta;
+    private View btnContactoSupport;
 
     private Button btnLogout;
 
@@ -51,6 +51,7 @@ public class AjustesFragment extends Fragment {
         tvUserName=view.findViewById(R.id.tvUserName);
         btnEliminarCuenta=view.findViewById(R.id.btnEliminarCuenta);
         btnLogout=view.findViewById(R.id.btnLogout);
+        btnContactoSupport=view.findViewById(R.id.btnContactoSupport);
 
         SessionManager sessionManager = SessionManager.getInstance(requireContext());
         txtUserCorreo.setText(sessionManager.getEmail());
@@ -63,7 +64,7 @@ public class AjustesFragment extends Fragment {
         tvUserName.setText(nombre);
 
 
-
+        //Boton cerrar sesion
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -108,6 +109,21 @@ public class AjustesFragment extends Fragment {
                         })
                         .setNegativeButton("Cancelar",null).show();
 
+            }
+        });
+
+        //Boton soporte
+        btnContactoSupport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String asunto="Soporte PlayMatch";
+                Intent intent = new Intent(Intent.ACTION_SENDTO);         //uri.encode()sirve para convertir espaciios y caracteres especiales automaticamente
+                intent.setData(android.net.Uri.parse("mailto:ivan14rg@hotmail.com?subject=" + android.net.Uri.encode(asunto)));
+                try {
+                    startActivity(intent);
+                } catch (android.content.ActivityNotFoundException e) {
+                    Toast.makeText(requireContext(), "No tienes app de correo instalada", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
