@@ -61,8 +61,21 @@ public class PerfilFragment extends Fragment {
         etCorreo = view.findViewById(R.id.etCorreo);
         txtNombreUsuario = view.findViewById(R.id.txtNombreUsuario);
 
-        // Uso de SessionManager para obtener el ID de usuario de forma segura
-        int usuarioId = SessionManager.getInstance(requireContext()).getUsuarioId();
+        // Uso de SessionManager para obtener datos de forma instantánea
+        SessionManager sessionManager = SessionManager.getInstance(requireContext());
+        int usuarioId = sessionManager.getUsuarioId();
+
+        // Rellenar datos locales inmediatamente para evitar el retardo visual
+        etNombre.setText(sessionManager.getNombre());
+        txtNombreUsuario.setText(sessionManager.getNombre());
+        etCorreo.setText(sessionManager.getEmail());
+        int edad = sessionManager.getEdad();
+        if (edad > 0) {
+            etEdad.setText(String.valueOf(edad));
+        }
+        if (sessionManager.getPosicion() != null) {
+            etPosicion.setText(sessionManager.getPosicion());
+        }
 
         if (usuarioId != -1) {
             cargarDatosUsuario(usuarioId);
@@ -94,6 +107,17 @@ public class PerfilFragment extends Fragment {
                     }
                     if (usuario.getPosicion() != null && !usuario.getPosicion().isEmpty()) {
                         etPosicion.setText(usuario.getPosicion());
+                    }
+
+                    // Actualizar la sesión local con los datos frescos del servidor
+                    if (getContext() != null) {
+                        SessionManager.getInstance(getContext()).guardarSesion(
+                                usuario.getId(),
+                                usuario.getNombre(),
+                                usuario.getEmail(),
+                                usuario.getEdad(),
+                                usuario.getPosicion()
+                        );
                     }
 
                 } else {
