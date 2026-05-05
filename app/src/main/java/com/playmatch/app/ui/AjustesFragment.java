@@ -1,9 +1,7 @@
 package com.playmatch.app.ui;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -56,11 +54,7 @@ public class AjustesFragment extends Fragment {
         txtUserCorreo.setText(sessionManager.getEmail());
         tvUserName.setText(sessionManager.getNombre());
 
-        SharedPreferences preferences=requireActivity().getSharedPreferences("sesion", Context.MODE_PRIVATE);
-        String email=preferences.getString("email","");
-        String nombre=preferences.getString("nombre" , "");
-        txtUserCorreo.setText(email);
-        tvUserName.setText(nombre);
+
 
 
 
@@ -82,16 +76,15 @@ public class AjustesFragment extends Fragment {
                 new AlertDialog.Builder(requireContext()).setTitle("Eliminar cuenta")
                         .setMessage("¿Estas seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer")
                         .setPositiveButton("Eliminar" , (dialog, which) -> {
-                            SharedPreferences preferences=requireActivity().getSharedPreferences("sesion", Context.MODE_PRIVATE);
-                            int id= preferences.getInt("id", -1);
-
+                            //conseguir id del usuario iniciado
+                            int id = sessionManager.getUsuarioId();
 
                             RetrofitCliente.getApiServicio().eliminarUsuario(id).enqueue(new Callback<Map<String, String>>() {
                                 @Override
                                 public void onResponse(Call<Map<String, String>> call, Response<Map<String, String>> response) {
                                     if (response.isSuccessful()){
                                         //si la peticion es correcta borramos user de la base de datos
-                                        preferences.edit().clear().apply();
+                                        sessionManager.cerrarSesion();
                                         //volvemos al login
                                         Intent intent=new Intent(requireActivity(), LoginActivity.class);
                                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
