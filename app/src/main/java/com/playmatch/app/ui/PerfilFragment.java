@@ -75,11 +75,11 @@ public class PerfilFragment extends Fragment {
         btnCambiarAvatar=view.findViewById(R.id.btnCambiarAvatar);
         imgAvatar=view.findViewById(R.id.imgAvatar);
 
-        // Uso de SessionManager para obtener datos de forma instantánea
+        //Uso de SessionManager para obtener datos de forma instantánea
         SessionManager sessionManager = SessionManager.getInstance(requireContext());
         int usuarioId = sessionManager.getUsuarioId();
 
-        // Rellenar datos locales inmediatamente para evitar el retardo visual
+        //Rellenar datos locales inmediatamente para evitar el retardo visual
         etNombre.setText(sessionManager.getNombre());
         txtNombreUsuario.setText(sessionManager.getNombre());
         etCorreo.setText(sessionManager.getEmail());
@@ -89,6 +89,11 @@ public class PerfilFragment extends Fragment {
         }
         if (sessionManager.getPosicion() != null) {
             etPosicion.setText(sessionManager.getPosicion());
+        }
+
+        String avatarUrl=sessionManager.getAvatar();
+        if (avatarUrl!=null && !avatarUrl.isEmpty()){
+            Glide.with(this).load(avatarUrl).into(imgAvatar);
         }
 
         if (usuarioId != -1) {
@@ -168,8 +173,18 @@ public class PerfilFragment extends Fragment {
         RetrofitCliente.getApiServicio().actualizarUsuario(id, usuarioActual).enqueue(new Callback<Usuario>() {
             @Override
             public void onResponse(Call<Usuario> call, Response<Usuario> response) {
+                //Si todo va bien cargamos la foto de la bdd en el elemento con glide
                 if (response.isSuccessful() && getContext() != null) {
                     Glide.with(requireContext()).load(url).into(imgAvatar);
+                //Obtenemos la sesion guardada en local y SessionManager lo guarda en el movil para no esperar la respuesta del servidor
+                    SessionManager.getInstance(requireActivity()).guardarSesion(
+                            usuarioActual.getId(),
+                            usuarioActual.getNombre(),
+                            usuarioActual.getEmail(),
+                            usuarioActual.getEdad(),
+                            usuarioActual.getPosicion(),
+                            usuarioActual.getAvatarUrl()
+                    );
                     Toast.makeText(getContext(), "Avatar actualizado", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -206,14 +221,15 @@ public class PerfilFragment extends Fragment {
                         Glide.with(requireContext()).load(usuarioActual.getAvatarUrl()).into(imgAvatar);
                     }
 
-                    // Actualizar la sesión local con los datos frescos del servidor
+                    //Actualizar la sesión local con los datos frescos del servidor
                     if (getContext() != null) {
                         SessionManager.getInstance(getContext()).guardarSesion(
                                 usuarioActual.getId(),
                                 usuarioActual.getNombre(),
                                 usuarioActual.getEmail(),
                                 usuarioActual.getEdad(),
-                                usuarioActual.getPosicion()
+                                usuarioActual.getPosicion(),
+                                usuarioActual.getAvatarUrl()
                         );
                     }
 

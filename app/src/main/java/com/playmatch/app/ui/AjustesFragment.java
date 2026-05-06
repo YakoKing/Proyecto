@@ -62,7 +62,7 @@ public class AjustesFragment extends Fragment {
             }
         });
 
-        // Boton eliminar cuenta
+        //Boton eliminar cuenta
         btnEliminarCuenta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -92,12 +92,12 @@ public class AjustesFragment extends Fragment {
             }
         });
 
-        // Boton soporte
+        //Boton soporte
         btnContactoSupport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String asunto = "Soporte PlayMatch";
-                Intent intent = new Intent(Intent.ACTION_SENDTO);
+                Intent intent = new Intent(Intent.ACTION_SENDTO);              //uri.encode()sirve para convertir espaciios y caracteres especiales automaticamente
                 intent.setData(android.net.Uri.parse("mailto:ivan14rg@hotmail.com?subject=" + android.net.Uri.encode(asunto)));
                 try {
                     startActivity(intent);
@@ -107,7 +107,7 @@ public class AjustesFragment extends Fragment {
             }
         });
 
-        // Al clicar en el perfil de ajustes, redirigir al fragment de perfil
+        //Al clicar en el perfil de ajustes, redirigir al fragment de perfil
         btnPerfil.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

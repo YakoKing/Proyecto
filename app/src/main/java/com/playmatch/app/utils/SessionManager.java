@@ -17,6 +17,7 @@ public class SessionManager {
     private static final String KEY_USER_EMAIL = "email";
     private static final String KEY_USER_EDAD ="edad";
     private static final String KEY_USER_POSICION ="posicion";
+    private static final String KEY_USER_AVATAR="avatarUrl";
 
     private static SessionManager instance;
     private SharedPreferences sharedPreferences;
@@ -48,13 +49,14 @@ public class SessionManager {
         return instance;
     }
 
-    public void guardarSesion(int id, String nombre, String email, int edad, String posicion) {
+    public void guardarSesion(int id, String nombre, String email, int edad, String posicion , String avatarUrl) {
         sharedPreferences.edit()
                 .putInt(KEY_USER_ID, id)
                 .putString(KEY_USER_NAME, nombre)
                 .putString(KEY_USER_EMAIL, email)
                 .putInt(KEY_USER_EDAD, edad)
                 .putString(KEY_USER_POSICION, posicion)
+                .putString(KEY_USER_AVATAR, avatarUrl)
                 .apply();
     }
     public int getUsuarioId() {
@@ -71,6 +73,8 @@ public class SessionManager {
     public int getEdad(){return sharedPreferences.getInt(KEY_USER_EDAD, 0);}
 
     public String getPosicion(){return sharedPreferences.getString(KEY_USER_POSICION, "");}
+
+    public String getAvatar(){return sharedPreferences.getString(KEY_USER_AVATAR , "");}
 
     public boolean estaLogueado() {
         return getUsuarioId() != -1;
