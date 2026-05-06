@@ -13,8 +13,6 @@
         android:paddingBottom="32dp"
         android:paddingTop="150dp">
 
-
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -25,7 +23,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Ajustes"
+                android:text="@string/ajustes"
                 android:textSize="28sp"
                 android:textStyle="bold"
                 android:textColor="#FFFFFF"
@@ -34,7 +32,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Gestiona tu cuenta y preferencias"
+                android:text="@string/gestiona_tu_cuenta_y_preferencias"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:textColor="#FF8C8C8C"
@@ -42,7 +40,6 @@
 
         </LinearLayout>
 
-        <!--Primera card-->
         <androidx.cardview.widget.CardView
             android:id="@+id/cardProfile"
             android:layout_width="match_parent"
@@ -54,13 +51,14 @@
             app:cardBackgroundColor="#FFFFFFFF">
 
             <LinearLayout
+                android:id="@+id/btnPerfil"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:padding="20dp">
-
-
+                android:padding="20dp"
+                android:clickable="true"
+                android:focusable="true">
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -73,7 +71,7 @@
                         android:id="@+id/tvUserName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="María Rodríguez"
+                        android:text="@string/mar_a_rodr_guez"
                         android:layout_marginLeft="34dp"
                         android:textSize="17sp"
                         android:textStyle="bold"
@@ -83,7 +81,7 @@
                         android:id="@+id/txtUserCorreo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="maria.rodriguez@email.com"
+                        android:text="@string/maria_rodriguez_email_com"
                         android:layout_marginLeft="34dp"
                         android:textSize="13sp"
                         android:textColor="#FF8C8C8C"
@@ -96,7 +94,7 @@
                     android:layout_width="18dp"
                     android:layout_height="18dp"
                     android:src="@drawable/flecha"
-                    android:contentDescription="Ver perfil"
+                    android:contentDescription="@string/ver_perfil"
                     app:tint="#FF8C8C8C" />
 
             </LinearLayout>
@@ -107,7 +105,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="CUENTA"
+            android:text="@string/cuenta"
             android:textSize="12sp"
             android:textStyle="bold"
             android:textColor="#FFFFFF"
@@ -152,7 +150,7 @@
                             android:layout_gravity="center"
                             android:src="@drawable/candado"
                             app:tint="#FF5B7FFF"
-                            android:contentDescription="Contraseña" />
+                            android:contentDescription="@string/contrasen_a" />
 
                     </FrameLayout>
 
@@ -166,7 +164,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Cambiar contraseña"
+                            android:text="@string/cambiar_contrase_a"
                             android:textSize="15sp"
                             android:textColor="#FF1A1A1A"
                             android:textStyle="bold" />
@@ -174,7 +172,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Actualiza tu contraseña de acceso"
+                            android:text="@string/actualiza_tu_contrase_a_de_acceso"
                             android:textSize="12sp"
                             android:textColor="#FFA0A0A0"
                             android:textStyle="bold"
@@ -186,7 +184,7 @@
                         android:layout_width="18dp"
                         android:layout_height="18dp"
                         android:src="@drawable/flecha"
-                        android:contentDescription="Ir"
+                        android:contentDescription="@string/ir"
                         app:tint="#FFC0C0C0" />
 
                 </LinearLayout>
@@ -222,7 +220,7 @@
                             android:layout_gravity="center"
                             android:src="@drawable/borrar"
                             app:tint="#FFE5484D"
-                            android:contentDescription="Eliminar" />
+                            android:contentDescription="@string/eliminar" />
 
                     </FrameLayout>
 
@@ -236,7 +234,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Eliminar cuenta"
+                            android:text="@string/eliminar_cuenta"
                             android:textSize="15sp"
                             android:textColor="#FFE5484D"
                             android:textStyle="bold" />
@@ -244,7 +242,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Se borrarán todos tus datos"
+                            android:text="@string/se_borrar_n_todos_tus_datos"
                             android:textStyle="bold"
                             android:textSize="12sp"
                             android:textColor="#FFA0A0A0"
@@ -255,7 +253,7 @@
                     <ImageView
                         android:layout_width="18dp"
                         android:layout_height="18dp"
-                        android:contentDescription="Ir"
+                        android:contentDescription="@string/ir_"
                         android:src="@drawable/flecha"
                         app:tint="#FFC0C0C0" />
 
@@ -269,7 +267,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="SOPORTE"
+            android:text="@string/soporte"
             android:textSize="12sp"
             android:textStyle="bold"
             android:textColor="#FFFFFF"
@@ -309,7 +307,7 @@
                         android:layout_gravity="center"
                         android:src="@drawable/soporte"
                         app:tint="#FF10B981"
-                        android:contentDescription="Soporte" />
+                        android:contentDescription="@string/soporte_" />
 
                 </FrameLayout>
 
@@ -323,7 +321,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Contactar soporte"
+                        android:text="@string/contactar_soporte"
                         android:textSize="15sp"
                         android:textColor="#FF1A1A1A"
                         android:textStyle="bold" />
@@ -331,7 +329,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="¿Necesitas ayuda? Escríbenos"
+                        android:text="@string/necesitas_ayuda_escr_benos"
                         android:textSize="12sp"
                         android:textColor="#FFA0A0A0"
                         android:textStyle="bold"
@@ -343,7 +341,7 @@
                     android:layout_width="18dp"
                     android:layout_height="18dp"
                     android:src="@drawable/flecha"
-                    android:contentDescription="Ir"
+                    android:contentDescription="@string/ir__"
                     app:tint="#FFC0C0C0" />
 
             </LinearLayout>
@@ -357,7 +355,7 @@
             android:layout_height="56dp"
             android:layout_marginHorizontal="20dp"
             android:layout_marginBottom="20dp"
-            android:text="Cerrar sesión"
+            android:text="@string/cerrar_sesi_n"
             android:textSize="15sp"
             android:textStyle="bold"
             android:textAllCaps="false"
@@ -375,7 +373,7 @@
             android:id="@+id/tvVersion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Versión 1.0.0"
+            android:text="@string/versi_n_1_0_0"
             android:textSize="12sp"
             android:textColor="#FFC0B8AD"
             android:gravity="center"
@@ -384,5 +382,4 @@
             android:letterSpacing="0.04" />
 
     </LinearLayout>
-
 </ScrollView>

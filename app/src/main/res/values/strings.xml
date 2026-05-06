@@ -8,5 +8,26 @@
     <string name="Correo_electronico">Correo electrónico</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="maria_rodriguez_email_com">maria.rodriguez@email.com</string>
+    <string name="ver_perfil">Ver perfil</string>
+    <string name="cuenta">CUENTA</string>
+    <string name="contrasen_a">Contraseña</string>
+    <string name="actualiza_tu_contrase_a_de_acceso">Actualiza tu contraseña de acceso</string>
+    <string name="ir">Ir</string>
+    <string name="eliminar">Eliminar</string>
+    <string name="eliminar_cuenta">Eliminar cuenta</string>
+    <string name="se_borrar_n_todos_tus_datos">Se borrarán todos tus datos</string>
+    <string name="ir_">Ir</string>
+    <string name="soporte">SOPORTE</string>
+    <string name="soporte_">Soporte</string>
+    <string name="contactar_soporte">Contactar soporte</string>
+    <string name="necesitas_ayuda_escr_benos">¿Necesitas ayuda? Escríbenos</string>
+    <string name="ir__">Ir</string>
+    <string name="cerrar_sesi_n">Cerrar sesión</string>
+    <string name="versi_n_1_0_0">Versión 1.0.0</string>
+    <string name="ajustes">Ajustes</string>
+    <string name="gestiona_tu_cuenta_y_preferencias">Gestiona tu cuenta y preferencias</string>
+    <string name="mar_a_rodr_guez">María Rodríguez</string>
+    <string name="cambiar_contrase_a">Cambiar contraseña</string>
 
 </resources>

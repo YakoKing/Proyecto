@@ -8,10 +8,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.playmatch.app.ApiServicio.ApiServicio;
+import com.playmatch.app.ApiServicio.RetrofitCliente;
 import com.playmatch.app.R;
+import com.playmatch.app.entity.Usuario;
+import com.playmatch.app.utils.SessionManager;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class RegistroActivity extends AppCompatActivity {
@@ -44,15 +53,64 @@ public class RegistroActivity extends AppCompatActivity {
         txtEdadRegistro=findViewById(R.id.txtEdadRegistro);
         btnMostrarContraseña=findViewById(R.id.btnMostrarContraseña);
 
-
+        //boton crear cuenta
         btnCrearCuenta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(RegistroActivity.this , HomeActivity.class);
-                String crearNombreUsuario=txtUsuario.getText().toString();
-                intent.putExtra("nombre_usuario",crearNombreUsuario);
-                startActivity(intent);
-                finish();
+
+
+                //guardar lo que el usuario escribe en los campos
+                String nombre=txtUsuario.getText().toString().trim();
+                String email=txtEmail.getText().toString().trim();
+                String contraseña=txtContraseña.getText().toString().trim();
+                String posicion=txtPosicionFavorita.getText().toString().trim();
+                String edadStr=txtEdadRegistro.getText().toString().trim();
+
+                if (nombre.isEmpty() || email.isEmpty() || contraseña.isEmpty()){
+
+                    Toast.makeText(RegistroActivity.this, "Nombre , email y contraseñas son obligatorios" , Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Usuario usuario= new Usuario();
+                usuario.setNombre(nombre);
+                usuario.setEmail(email);
+                usuario.setPassword(contraseña);
+                if (!posicion.isEmpty()) {
+                    usuario.setPosicion(posicion);
+                }
+                //comprobar que el campo edad no esta vacio porque peta por ser int
+                if (!edadStr.isEmpty()) {
+                    usuario.setEdad(Integer.parseInt(edadStr));
+                };
+
+                btnCrearCuenta.setEnabled(false);
+                ApiServicio api= RetrofitCliente.getApiServicio();
+                api.registrar(usuario).enqueue(new Callback<Usuario>() {
+                    @Override
+                    public void onResponse(Call<Usuario> call, Response<Usuario> response) {
+                        btnCrearCuenta.setEnabled(true);
+
+                        if (response.isSuccessful() && response.body() !=null){
+                            Usuario creado= response.body();
+                            SessionManager.getInstance(RegistroActivity.this).guardarSesion(creado.getId()
+                            , creado.getNombre() , creado.getEmail() , creado.getEdad(), creado.getPosicion());
+                            Intent intent = new Intent(RegistroActivity.this , HomeActivity.class);
+                            startActivity(intent);
+                            finish();
+                        }else{
+                            Toast.makeText(RegistroActivity.this, "Error al crear la cuenta: " + response.code(), Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<Usuario> call, Throwable t) {
+
+                        btnCrearCuenta.setEnabled(true);
+                        Toast.makeText(RegistroActivity.this, "Sin conexión: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+
+                    }
+                });
             }
         });
 
