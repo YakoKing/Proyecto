@@ -47,10 +47,10 @@ public class PerfilFragment extends Fragment {
     private Usuario usuarioActual;
 
     private static final String[] avatares = {
-            "https://i.imgur.com/pUlXhdx.png",
+            "https://i.imgur.com/d2ON2K4.png",
             "https://i.imgur.com/yaKJe3S.png",
             "https://i.imgur.com/IS2sbuV.png",
-            "https://i.imgur.com/sSin4Q7.png"
+            "https://i.imgur.com/ypjBhlR.png"
     };
 
 

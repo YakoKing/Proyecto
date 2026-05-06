@@ -93,7 +93,7 @@ public class RegistroActivity extends AppCompatActivity {
                         if (response.isSuccessful() && response.body() !=null){
                             Usuario creado= response.body();
                             SessionManager.getInstance(RegistroActivity.this).guardarSesion(creado.getId()
-                            , creado.getNombre() , creado.getEmail());
+                            , creado.getNombre() , creado.getEmail() , creado.getEdad(), creado.getPosicion());
                             Intent intent = new Intent(RegistroActivity.this , HomeActivity.class);
                             startActivity(intent);
                             finish();
