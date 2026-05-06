@@ -28,7 +28,7 @@ public class AjustesFragment extends Fragment {
 
     private TextView txtUserCorreo;
     private TextView tvUserName;
-    private View btnEliminarCuenta, btnPerfil;
+    private View btnEliminarCuenta, btnPerfil, btnContactoSupport;
     private Button btnLogout;
 
     public AjustesFragment() {
@@ -46,17 +46,16 @@ public class AjustesFragment extends Fragment {
         btnEliminarCuenta = view.findViewById(R.id.btnEliminarCuenta);
         btnPerfil = view.findViewById(R.id.btnPerfil);
         btnLogout = view.findViewById(R.id.btnLogout);
+        btnContactoSupport = view.findViewById(R.id.btnContactoSupport);
 
         SessionManager sessionManager = SessionManager.getInstance(requireContext());
         txtUserCorreo.setText(sessionManager.getEmail());
         tvUserName.setText(sessionManager.getNombre());
 
-
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 sessionManager.cerrarSesion();
-                // Volver a la pantalla de Login
                 Intent intent = new Intent(getActivity(), LoginActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
@@ -70,16 +69,13 @@ public class AjustesFragment extends Fragment {
                 new AlertDialog.Builder(requireContext()).setTitle("Eliminar cuenta")
                         .setMessage("¿Estas seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer")
                         .setPositiveButton("Eliminar" , (dialog, which) -> {
-                            //conseguir id del usuario iniciado
                             int id = sessionManager.getUsuarioId();
 
                             RetrofitCliente.getApiServicio().eliminarUsuario(id).enqueue(new Callback<Map<String, String>>() {
                                 @Override
                                 public void onResponse(Call<Map<String, String>> call, Response<Map<String, String>> response) {
                                     if (response.isSuccessful()){
-                                        //si la peticion es correcta borramos user de la base de datos
                                         sessionManager.cerrarSesion();
-                                        //volvemos al login
                                         Intent intent=new Intent(requireActivity(), LoginActivity.class);
                                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                         startActivity(intent);
@@ -93,7 +89,21 @@ public class AjustesFragment extends Fragment {
                             });
                         })
                         .setNegativeButton("Cancelar",null).show();
+            }
+        });
 
+        // Boton soporte
+        btnContactoSupport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String asunto = "Soporte PlayMatch";
+                Intent intent = new Intent(Intent.ACTION_SENDTO);
+                intent.setData(android.net.Uri.parse("mailto:ivan14rg@hotmail.com?subject=" + android.net.Uri.encode(asunto)));
+                try {
+                    startActivity(intent);
+                } catch (android.content.ActivityNotFoundException e) {
+                    Toast.makeText(requireContext(), "No tienes app de correo instalada", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
