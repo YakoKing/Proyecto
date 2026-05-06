@@ -209,11 +209,11 @@ public class PerfilFragment extends Fragment {
                     // Actualizar la sesión local con los datos frescos del servidor
                     if (getContext() != null) {
                         SessionManager.getInstance(getContext()).guardarSesion(
-                                usuario.getId(),
-                                usuario.getNombre(),
-                                usuario.getEmail(),
-                                usuario.getEdad(),
-                                usuario.getPosicion()
+                                usuarioActual.getId(),
+                                usuarioActual.getNombre(),
+                                usuarioActual.getEmail(),
+                                usuarioActual.getEdad(),
+                                usuarioActual.getPosicion()
                         );
                     }
 
