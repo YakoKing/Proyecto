@@ -18,6 +18,7 @@ import com.playmatch.app.ApiServicio.RetrofitCliente;
 import com.playmatch.app.R;
 import com.playmatch.app.adaptadores.PistaAdapter;
 import com.playmatch.app.entity.Pista;
+import com.playmatch.app.utils.SessionManager;
 
 import java.util.List;
 import retrofit2.Call;
@@ -64,8 +65,9 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-        String nombreUsuario = getIntent().getStringExtra("nombre_usuario");
-        BarTop.setTitle("Bienvenido " + (nombreUsuario != null ? nombreUsuario : ""));
+        //Mostrar el nonbre guardado en Session manager en la barra
+        String nombreUsuario = SessionManager.getInstance(this).getNombre();
+        BarTop.setTitle("Bienvenido " + nombreUsuario);
 
         // Fragments del menu
         BarMenu.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
