@@ -131,7 +131,8 @@ public class LoginActivity  extends AppCompatActivity {
                             Usuario usuario = response.body();
                             // Login correcto, guardar sesión segura
                             SessionManager.getInstance(LoginActivity.this)
-                                    .guardarSesion(usuario.getId(), usuario.getNombre(), usuario.getEmail(), usuario.getEdad(), usuario.getPosicion() , usuario.getAvatarUrl());
+                                    .guardarSesion(usuario.getId(), usuario.getNombre(), usuario.getEmail(), usuario.getEdad(), usuario.getPosicion() ,
+                                            usuario.getAvatarUrl() , usuario.getTelefono());
 
                             Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                             intent.putExtra("nombre_usuario", usuario.getNombre());

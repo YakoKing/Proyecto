@@ -30,7 +30,7 @@
     <EditText
         android:id="@+id/txtEmail"
         android:layout_width="0dp"
-        android:layout_height="58dp"
+        android:layout_height="48dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
@@ -47,25 +47,25 @@
     <EditText
         android:id="@+id/txtUsuario"
         android:layout_width="0dp"
-        android:layout_height="58dp"
+        android:layout_height="48dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="18dp"
         android:layout_marginEnd="16dp"
-        android:ems="10"
-        android:inputType="text"
-        android:hint="@string/usuario"
-        android:textColorHint="@android:color/white"
-        android:textColor="@android:color/white"
         android:backgroundTint="@color/principal"
-        app:layout_constraintTop_toBottomOf="@id/logoLogin"
+        android:ems="10"
+        android:hint="@string/usuario"
+        android:inputType="text"
+        android:textColor="@android:color/white"
+        android:textColorHint="@android:color/white"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/logoLogin" />
 
 
     <EditText
         android:id="@+id/txtContraseña"
         android:layout_width="0dp"
-        android:layout_height="58dp"
+        android:layout_height="48dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
@@ -83,21 +83,19 @@
         android:id="@+id/btnCrearCuenta"
         android:layout_width="379dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
-        android:layout_marginEnd="16dp"
         android:background="@drawable/esquinas_redondas"
         android:backgroundTint="@null"
         android:text="@string/crear_cuenta"
         android:textColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtEdadRegistro" />
+        app:layout_constraintStart_toStartOf="@+id/imgFondoLogin"
+        app:layout_constraintTop_toBottomOf="@+id/etTelefono" />
 
     <EditText
         android:id="@+id/txtPosicionFavorita"
         android:layout_width="0dp"
-        android:layout_height="58dp"
+        android:layout_height="48dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
@@ -114,14 +112,14 @@
     <EditText
         android:id="@+id/txtEdadRegistro"
         android:layout_width="0dp"
-        android:layout_height="58dp"
+        android:layout_height="48dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:ems="10"
-        android:inputType="number"
         android:backgroundTint="@color/principal"
+        android:ems="10"
         android:hint="Edad"
+        android:inputType="number"
         android:textColor="@android:color/white"
         android:textColorHint="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
@@ -137,5 +135,21 @@
         app:layout_constraintEnd_toEndOf="@+id/txtContraseña"
         app:layout_constraintTop_toTopOf="@+id/txtContraseña"
         app:srcCompat="@drawable/mostrar_contrasena" />
+
+    <EditText
+        android:id="@+id/etTelefono"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:ems="10"
+        android:hint="Telefono"
+        android:inputType="number"
+        android:textColor="@android:color/white"
+        android:textColorHint="@android:color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/imgFondoLogin"
+        app:layout_constraintTop_toBottomOf="@+id/txtEdadRegistro" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

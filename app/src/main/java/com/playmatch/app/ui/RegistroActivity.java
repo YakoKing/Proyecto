@@ -10,6 +10,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.playmatch.app.ApiServicio.ApiServicio;
@@ -36,6 +37,8 @@ public class RegistroActivity extends AppCompatActivity {
     private ImageButton btnMostrarContraseña;
     private boolean contraseñaVisible=false;
 
+    private EditText etTelefono;
+
 
     @Override
     protected  void onCreate(Bundle savedInstanceState) {
@@ -52,6 +55,7 @@ public class RegistroActivity extends AppCompatActivity {
         txtPosicionFavorita=findViewById(R.id.txtPosicionFavorita);
         txtEdadRegistro=findViewById(R.id.txtEdadRegistro);
         btnMostrarContraseña=findViewById(R.id.btnMostrarContraseña);
+        etTelefono=findViewById(R.id.etTelefono);
 
         //boton crear cuenta
         btnCrearCuenta.setOnClickListener(new View.OnClickListener() {
@@ -65,6 +69,7 @@ public class RegistroActivity extends AppCompatActivity {
                 String contraseña=txtContraseña.getText().toString().trim();
                 String posicion=txtPosicionFavorita.getText().toString().trim();
                 String edadStr=txtEdadRegistro.getText().toString().trim();
+                String telefono=etTelefono.getText().toString().trim();
 
                 if (nombre.isEmpty() || email.isEmpty() || contraseña.isEmpty()){
 
@@ -82,6 +87,18 @@ public class RegistroActivity extends AppCompatActivity {
                 if (!edadStr.isEmpty()) {
                     usuario.setEdad(Integer.parseInt(edadStr));
                 };
+                if (!telefono.isEmpty() && telefono.length() != 9) {
+                    new AlertDialog.Builder(RegistroActivity.this)
+                            .setTitle("Teléfono inválido")
+                            .setMessage("El teléfono debe tener 9 dígitos.")
+                            .setPositiveButton("Aceptar", null)
+                            .show();
+                    return;
+                }
+                if (!telefono.isEmpty()){
+                    usuario.setTelefono(telefono);
+                }
+
 
                 btnCrearCuenta.setEnabled(false);
                 ApiServicio api= RetrofitCliente.getApiServicio();
@@ -93,7 +110,8 @@ public class RegistroActivity extends AppCompatActivity {
                         if (response.isSuccessful() && response.body() !=null){
                             Usuario creado= response.body();
                             SessionManager.getInstance(RegistroActivity.this).guardarSesion(creado.getId()
-                            , creado.getNombre() , creado.getEmail() , creado.getEdad(), creado.getPosicion() , creado.getAvatarUrl());
+                            , creado.getNombre() , creado.getEmail() , creado.getEdad(), creado.getPosicion() , creado.getAvatarUrl()
+                            , creado.getTelefono());
                             Intent intent = new Intent(RegistroActivity.this , HomeActivity.class);
                             startActivity(intent);
                             finish();

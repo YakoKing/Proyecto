@@ -46,6 +46,8 @@ public class PerfilFragment extends Fragment {
     private ImageButton btnCambiarAvatar;
     private Usuario usuarioActual;
 
+    private EditText etTelefono;
+
     private static final String[] avatares = {
             "https://i.imgur.com/d2ON2K4.png",
             "https://i.imgur.com/yaKJe3S.png",
@@ -74,8 +76,9 @@ public class PerfilFragment extends Fragment {
         txtNombreUsuario = view.findViewById(R.id.txtNombreUsuario);
         btnCambiarAvatar=view.findViewById(R.id.btnCambiarAvatar);
         imgAvatar=view.findViewById(R.id.imgAvatar);
+        etTelefono=view.findViewById(R.id.etTelefono);
 
-        //Uso de SessionManager para obtener datos de forma instantánea
+        //Uso de SessionManager para obtener datos de forma instantánea en local
         SessionManager sessionManager = SessionManager.getInstance(requireContext());
         int usuarioId = sessionManager.getUsuarioId();
 
@@ -95,6 +98,11 @@ public class PerfilFragment extends Fragment {
         if (avatarUrl!=null && !avatarUrl.isEmpty()){
             Glide.with(this).load(avatarUrl).into(imgAvatar);
         }
+
+        if (sessionManager.getTelefono()!=null){
+            etTelefono.setText(sessionManager.getTelefono());
+        }
+
 
         if (usuarioId != -1) {
             cargarDatosUsuario(usuarioId);
@@ -166,6 +174,7 @@ public class PerfilFragment extends Fragment {
         dialog.show();
     }
 
+    //Interractuar con la bdd con Retrofit
     private void guardarAvatar(String url) {
         if (usuarioActual == null) return;
         usuarioActual.setAvatarUrl(url);
@@ -183,7 +192,8 @@ public class PerfilFragment extends Fragment {
                             usuarioActual.getEmail(),
                             usuarioActual.getEdad(),
                             usuarioActual.getPosicion(),
-                            usuarioActual.getAvatarUrl()
+                            usuarioActual.getAvatarUrl(),
+                            usuarioActual.getTelefono()
                     );
                     Toast.makeText(getContext(), "Avatar actualizado", Toast.LENGTH_SHORT).show();
                 }
@@ -220,6 +230,10 @@ public class PerfilFragment extends Fragment {
                     if (usuarioActual.getAvatarUrl() != null && !usuarioActual.getAvatarUrl().isEmpty()) {
                         Glide.with(requireContext()).load(usuarioActual.getAvatarUrl()).into(imgAvatar);
                     }
+                    if (usuarioActual.getTelefono() != null && !usuarioActual.getTelefono().isEmpty()) {
+                        etTelefono.setText(usuarioActual.getTelefono());
+
+                    }
 
                     //Actualizar la sesión local con los datos frescos del servidor
                     if (getContext() != null) {
@@ -229,7 +243,8 @@ public class PerfilFragment extends Fragment {
                                 usuarioActual.getEmail(),
                                 usuarioActual.getEdad(),
                                 usuarioActual.getPosicion(),
-                                usuarioActual.getAvatarUrl()
+                                usuarioActual.getAvatarUrl(),
+                                usuarioActual.getTelefono()
                         );
                     }
 

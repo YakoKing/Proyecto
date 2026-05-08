@@ -19,9 +19,13 @@ public class SessionManager {
     private static final String KEY_USER_POSICION ="posicion";
     private static final String KEY_USER_AVATAR="avatarUrl";
 
+    private static final String KEY_USER_TELEFONO="telefono";
+
     private static SessionManager instance;
     private SharedPreferences sharedPreferences;
 
+    /*Sesion manager Api para guardar datos del usuario logueado para tenerlos instantaneos y no
+    tener que esperar al servidor */
     private SessionManager(Context context) {
         try {
             MasterKey masterKey = new MasterKey.Builder(context)
@@ -49,7 +53,7 @@ public class SessionManager {
         return instance;
     }
 
-    public void guardarSesion(int id, String nombre, String email, int edad, String posicion , String avatarUrl) {
+    public void guardarSesion(int id, String nombre, String email, int edad, String posicion , String avatarUrl ,String telefono) {
         sharedPreferences.edit()
                 .putInt(KEY_USER_ID, id)
                 .putString(KEY_USER_NAME, nombre)
@@ -57,6 +61,7 @@ public class SessionManager {
                 .putInt(KEY_USER_EDAD, edad)
                 .putString(KEY_USER_POSICION, posicion)
                 .putString(KEY_USER_AVATAR, avatarUrl)
+                .putString(KEY_USER_TELEFONO, telefono)
                 .apply();
     }
     public int getUsuarioId() {
@@ -75,6 +80,8 @@ public class SessionManager {
     public String getPosicion(){return sharedPreferences.getString(KEY_USER_POSICION, "");}
 
     public String getAvatar(){return sharedPreferences.getString(KEY_USER_AVATAR , "");}
+
+    public String getTelefono(){return  sharedPreferences.getString(KEY_USER_TELEFONO , "");}
 
     public boolean estaLogueado() {
         return getUsuarioId() != -1;
