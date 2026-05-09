@@ -76,17 +76,12 @@ public class RegistroActivity extends AppCompatActivity {
                     Toast.makeText(RegistroActivity.this, "Nombre , email y contraseñas son obligatorios" , Toast.LENGTH_SHORT).show();
                     return;
                 }
-                Usuario usuario= new Usuario();
-                usuario.setNombre(nombre);
-                usuario.setEmail(email);
-                usuario.setPassword(contraseña);
-                if (!posicion.isEmpty()) {
-                    usuario.setPosicion(posicion);
+                //validacion basica correo
+                if (!email.contains("@") || !email.contains(".")){
+                    txtEmail.setError("Email no valido");
+                    return;
                 }
-                //comprobar que el campo edad no esta vacio porque peta por ser int
-                if (!edadStr.isEmpty()) {
-                    usuario.setEdad(Integer.parseInt(edadStr));
-                };
+                //validacion basica de telefono
                 if (!telefono.isEmpty() && telefono.length() != 9) {
                     new AlertDialog.Builder(RegistroActivity.this)
                             .setTitle("Teléfono inválido")
@@ -95,6 +90,28 @@ public class RegistroActivity extends AppCompatActivity {
                             .show();
                     return;
                 }
+                //validadcion basica de edad
+                if (!edadStr.isEmpty()){
+                    int edad=Integer.parseInt(edadStr);
+                    if (edad <16 || edad>100){
+                        txtEdadRegistro.setError("Introduce una edad válida");
+                        return;
+                    }
+                }
+                //Crear usuario si pasa las validaciones basicas
+                Usuario usuario= new Usuario();
+                usuario.setNombre(nombre);
+                usuario.setEmail(email);
+                usuario.setPassword(contraseña);
+
+                //campos opcionales se pueden rellenar luego en perfil
+                if (!posicion.isEmpty()) {
+                    usuario.setPosicion(posicion);
+                }
+                //comprobar que el campo edad no esta vacio porque peta por ser int
+                if (!edadStr.isEmpty()) {
+                    usuario.setEdad(Integer.parseInt(edadStr));
+                };
                 if (!telefono.isEmpty()){
                     usuario.setTelefono(telefono);
                 }

@@ -182,7 +182,7 @@ public class PerfilFragment extends Fragment {
         RetrofitCliente.getApiServicio().actualizarUsuario(id, usuarioActual).enqueue(new Callback<Usuario>() {
             @Override
             public void onResponse(Call<Usuario> call, Response<Usuario> response) {
-                //Si todo va bien cargamos la foto de la bdd en el elemento con glide
+                //Si todo va bien cargar la foto de la bdd en el elemento con glide
                 if (response.isSuccessful() && getContext() != null) {
                     Glide.with(requireContext()).load(url).into(imgAvatar);
                 //Obtenemos la sesion guardada en local y SessionManager lo guarda en el movil para no esperar la respuesta del servidor
