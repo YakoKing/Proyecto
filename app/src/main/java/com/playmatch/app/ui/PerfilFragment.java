@@ -1,10 +1,10 @@
 package com.playmatch.app.ui;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,18 +33,13 @@ public class PerfilFragment extends Fragment {
     private ImageView imgAvatar;
     private TextView txtNombreUsuario;
     private TextView txtReputacion;
-    private TextView txtNombre;
     private EditText etNombre;
-    private TextView txtEdad;
     private EditText etEdad;
-    private TextView txtPosicion;
     private EditText etPosicion;
-    private TextView txtEmail;
     private EditText etCorreo;
     private Button btnGuardar;
     private ImageButton btnCambiarAvatar;
     private Usuario usuarioActual;
-
     private EditText etTelefono;
 
     private static final String[] avatares = {
@@ -60,33 +56,31 @@ public class PerfilFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_perfil, container, false);
 
+        // Inicializar vistas
         etNombre = view.findViewById(R.id.etNombre);
-        txtNombre = view.findViewById(R.id.txtNombre);
         btnGuardar = view.findViewById(R.id.btnGuardar);
         etEdad = view.findViewById(R.id.etEdad);
         etPosicion = view.findViewById(R.id.etPosicion);
         etCorreo = view.findViewById(R.id.etCorreo);
         txtNombreUsuario = view.findViewById(R.id.txtNombreUsuario);
-        btnCambiarAvatar=view.findViewById(R.id.btnCambiarAvatar);
-        imgAvatar=view.findViewById(R.id.imgAvatar);
-        etTelefono=view.findViewById(R.id.etTelefono);
-
-        //Uso de SessionManager para obtener datos de forma instantánea en local
-        SessionManager sessionManager = SessionManager.getInstance(requireContext());
-        int usuarioId = sessionManager.getUsuarioId();
+        txtReputacion = view.findViewById(R.id.txtReputacion);
+        btnCambiarAvatar = view.findViewById(R.id.btnCambiarAvatar);
+        imgAvatar = view.findViewById(R.id.imgAvatar);
+        etTelefono = view.findViewById(R.id.etTelefono);
 
         // Cargar datos desde caché inmediatamente
         Usuario cachedUsuario = SessionManager.getInstance(requireContext()).getUsuario();
         if (cachedUsuario != null) {
+            usuarioActual = cachedUsuario;
             mostrarDatosUsuario(cachedUsuario);
         }
 
-        // Refrescar desde el servidor
+        // Refrescar desde el servidor para tener datos actualizados
         int userId = SessionManager.getInstance(requireContext()).getUsuarioId();
         if (userId != -1) {
             cargarDatosUsuario(userId);
@@ -95,8 +89,17 @@ public class PerfilFragment extends Fragment {
         btnGuardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String nombre = etNombre.getText().toString();
-                txtNombreUsuario.setText(nombre);
+                if (usuarioActual != null) {
+                    // Actualizar objeto local con datos de los EditText
+                    usuarioActual.setNombre(etNombre.getText().toString());
+                    String edadStr = etEdad.getText().toString();
+                    usuarioActual.setEdad(Integer.parseInt(edadStr.isEmpty() ? "0" : edadStr));
+                    usuarioActual.setPosicion(etPosicion.getText().toString());
+                    usuarioActual.setTelefono(etTelefono.getText().toString());
+                    
+                    // Guardar en servidor
+                    actualizarDatosUsuario();
+                }
             }
         });
 
@@ -110,15 +113,12 @@ public class PerfilFragment extends Fragment {
         return view;
     }
 
-    private void mostrarSeleccionAvatar(){
-
-        //infflar layout para convertir el xml en objeto View
-
-        View dialogo=LayoutInflater.from(requireContext()).inflate(R.layout.selector_avatares , null);
-        ImageView iv1=dialogo.findViewById(R.id.avatar1);
-        ImageView iv2=dialogo.findViewById(R.id.avatar2);
-        ImageView iv3=dialogo.findViewById(R.id.avatar3);
-        ImageView iv4=dialogo.findViewById(R.id.avatar4);
+    private void mostrarSeleccionAvatar() {
+        View dialogo = LayoutInflater.from(requireContext()).inflate(R.layout.selector_avatares, null);
+        ImageView iv1 = dialogo.findViewById(R.id.avatar1);
+        ImageView iv2 = dialogo.findViewById(R.id.avatar2);
+        ImageView iv3 = dialogo.findViewById(R.id.avatar3);
+        ImageView iv4 = dialogo.findViewById(R.id.avatar4);
 
         //glide para descargarr la imagen de internet y meterla en su campo correspondiente
         Glide.with(this).load(avatares[0]).into(iv1);
@@ -126,141 +126,119 @@ public class PerfilFragment extends Fragment {
         Glide.with(this).load(avatares[2]).into(iv3);
         Glide.with(this).load(avatares[3]).into(iv4);
 
-        //crrear dialogo y los metodos de cada imagen
-        AlertDialog dialog=new AlertDialog.Builder(requireContext()).setTitle("Eligue tu avatar").setView(dialogo)
-                .setNegativeButton("Cancelar" , null).create();
+        final AlertDialog dialog = new AlertDialog.Builder(requireContext())
+                .setTitle("Elige tu avatar")
+                .setView(dialogo)
+                .setNegativeButton("Cancelar", null)
+                .create();
 
         iv1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                guardarAvatar(avatares[0]); dialog.dismiss();
+                guardarAvatar(avatares[0]);
+                dialog.dismiss();
             }
         });
         iv2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                guardarAvatar(avatares[1]); dialog.dismiss();
+                guardarAvatar(avatares[1]);
+                dialog.dismiss();
             }
         });
         iv3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                guardarAvatar(avatares[2]); dialog.dismiss();
+                guardarAvatar(avatares[2]);
+                dialog.dismiss();
             }
         });
         iv4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                guardarAvatar(avatares[3]); dialog.dismiss();
+                guardarAvatar(avatares[3]);
+                dialog.dismiss();
             }
         });
 
         dialog.show();
     }
 
-    //Interractuar con la bdd con Retrofit
     private void guardarAvatar(String url) {
         if (usuarioActual == null) return;
         usuarioActual.setAvatarUrl(url);
+        actualizarDatosUsuario();
+    }
+
+    private void actualizarDatosUsuario() {
         int id = SessionManager.getInstance(requireContext()).getUsuarioId();
         RetrofitCliente.getApiServicio().actualizarUsuario(id, usuarioActual).enqueue(new Callback<Usuario>() {
             @Override
-            public void onResponse(Call<Usuario> call, Response<Usuario> response) {
-                //Si todo va bien cargar la foto de la bdd en el elemento con glide
-                if (response.isSuccessful() && getContext() != null) {
-                    Glide.with(requireContext()).load(url).into(imgAvatar);
-                //Obtenemos la sesion guardada en local y SessionManager lo guarda en el movil para no esperar la respuesta del servidor
-                    SessionManager.getInstance(requireActivity()).guardarSesion(
-                            usuarioActual.getId(),
-                            usuarioActual.getNombre(),
-                            usuarioActual.getEmail(),
-                            usuarioActual.getEdad(),
-                            usuarioActual.getPosicion(),
-                            usuarioActual.getAvatarUrl(),
-                            usuarioActual.getTelefono()
-                    );
-                    Toast.makeText(getContext(), "Avatar actualizado", Toast.LENGTH_SHORT).show();
+            public void onResponse(@NonNull Call<Usuario> call, @NonNull Response<Usuario> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    usuarioActual = response.body();
+                    mostrarDatosUsuario(usuarioActual);
+                    SessionManager.getInstance(requireContext()).guardarSesion(usuarioActual);
+                    Toast.makeText(getContext(), "Perfil actualizado", Toast.LENGTH_SHORT).show();
                 }
             }
+
             @Override
-            public void onFailure(Call<Usuario> call, Throwable t) {
+            public void onFailure(@NonNull Call<Usuario> call, @NonNull Throwable t) {
                 if (getContext() != null)
-                    Toast.makeText(getContext(), "Error al guardar avatar", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Error al guardar cambios", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-
-
-
-
     private void cargarDatosUsuario(int id) {
         RetrofitCliente.getApiServicio().getUsuario(id).enqueue(new Callback<Usuario>() {
             @Override
-            public void onResponse(Call<Usuario> call, Response<Usuario> response) {
+            public void onResponse(@NonNull Call<Usuario> call, @NonNull Response<Usuario> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     usuarioActual = response.body();
-                    //nombre y correo  campos obligatorios
-                    etNombre.setText(usuarioActual.getNombre());
-                    txtNombreUsuario.setText(usuarioActual.getNombre());
-                    etCorreo.setText(usuarioActual.getEmail());
-
-                    if (usuarioActual.getEdad() > 0) {
-                        etEdad.setText(String.valueOf(usuarioActual.getEdad()));
-                    }
-                    if (usuarioActual.getPosicion() != null && !usuarioActual.getPosicion().isEmpty()) {
-                        etPosicion.setText(usuarioActual.getPosicion());
-                    }
-                    if (usuarioActual.getAvatarUrl() != null && !usuarioActual.getAvatarUrl().isEmpty()) {
-                        Glide.with(requireContext()).load(usuarioActual.getAvatarUrl()).into(imgAvatar);
-                    }
-                    if (usuarioActual.getTelefono() != null && !usuarioActual.getTelefono().isEmpty()) {
-                        etTelefono.setText(usuarioActual.getTelefono());
-
-                    }
-    private void mostrarDatosUsuario(Usuario usuario) {
-        if (usuario == null) return;
-        etNombre.setText(usuario.getNombre());
-        txtNombreUsuario.setText(usuario.getNombre());
-        etCorreo.setText(usuario.getEmail());
-        if (usuario.getEdad() > 0) {
-            etEdad.setText(String.valueOf(usuario.getEdad()));
-        }
-        if (usuario.getPosicion() != null && !usuario.getPosicion().isEmpty()) {
-            etPosicion.setText(usuario.getPosicion());
-        }
-        if (usuario.getReputacion() > 0) {
-            txtReputacion.setText("Reputación: " + String.format("%.1f", usuario.getReputacion()));
-        }
-    }
-
-    private void cargarDatosUsuario(int id) {
-        RetrofitCliente.getApiServicio().getUsuario(id).enqueue(new Callback<Usuario>() {
-            @Override
-            public void onResponse(Call<Usuario> call, Response<Usuario> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    Usuario usuario = response.body();
-
-                    // Actualizar UI con datos frescos
-                    mostrarDatosUsuario(usuario);
-
-                    //Actualizar la sesión local con los datos frescos del servidor
+                    mostrarDatosUsuario(usuarioActual);
                     if (getContext() != null) {
-                        SessionManager.getInstance(getContext()).guardarSesion(usuario);
+                        SessionManager.getInstance(getContext()).guardarSesion(usuarioActual);
                     }
-
                 } else {
                     Log.e("PERFIL", "Error al cargar usuario: " + response.code());
                 }
             }
 
             @Override
-            public void onFailure(Call<Usuario> call, Throwable t) {
-                Log.e("PERFIL", "Fallo de conexion: " + t.getMessage(), t);
-                if (getContext() != null) {
-                    Toast.makeText(getContext(), "Error de conexion", Toast.LENGTH_SHORT).show();
-                }
+            public void onFailure(@NonNull Call<Usuario> call, @NonNull Throwable t) {
+                Log.e("PERFIL", "Fallo de conexion: " + t.getMessage());
             }
         });
+    }
+
+    private void mostrarDatosUsuario(Usuario usuario) {
+        if (usuario == null) return;
+        etNombre.setText(usuario.getNombre());
+        txtNombreUsuario.setText(usuario.getNombre());
+        etCorreo.setText(usuario.getEmail());
+        
+        if (usuario.getEdad() > 0) {
+            etEdad.setText(String.valueOf(usuario.getEdad()));
+        } else {
+            etEdad.setText("");
+        }
+        
+        if (usuario.getPosicion() != null) {
+            etPosicion.setText(usuario.getPosicion());
+        }
+        
+        if (usuario.getTelefono() != null) {
+            etTelefono.setText(usuario.getTelefono());
+        }
+
+        if (usuario.getReputacion() > 0 && txtReputacion != null) {
+            txtReputacion.setText("Reputación: " + String.format("%.1f", usuario.getReputacion()));
+        }
+
+        if (usuario.getAvatarUrl() != null && !usuario.getAvatarUrl().isEmpty()) {
+            Glide.with(this).load(usuario.getAvatarUrl()).into(imgAvatar);
+        }
     }
 }
