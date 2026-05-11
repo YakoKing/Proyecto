@@ -84,12 +84,11 @@ public class LoginActivity  extends AppCompatActivity {
         btnVerContraseña.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 if (contraseñaVisible){
                     txtContraseña.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD);
                     btnVerContraseña.setImageResource(R.drawable.mostrar_contrasena);
                     contraseñaVisible=false;
-                }else {
+                } else {
                     txtContraseña.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
                     btnVerContraseña.setImageResource(R.drawable.ocultar_contrasena);
                     contraseñaVisible=true;
@@ -97,27 +96,12 @@ public class LoginActivity  extends AppCompatActivity {
                     txtContraseña.setSelection(txtContraseña.getText().length());
                 }
 
-
         });
 
         //Boton de login
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
-                /*con el objeto Intent hacemos la accion,primer parametro desde donde se ejecuta
-                segundo parametro donde queremos ir*/
-                /*Intent intent= new Intent(LoginActivity.this, HomeActivity.class);
-
-                //pasamos el nombre de usuario a la pantalla del home
-                String nombreUsuario=txtUsuario.getText().toString();
-                intent.putExtra("nombre_usuario",nombreUsuario);
-                startActivity(intent);
-                finish();*/
-
-
-
                 String nombreUsuario = txtUsuario.getText().toString();
                 String pass = txtContraseña.getText().toString();
 
@@ -130,8 +114,7 @@ public class LoginActivity  extends AppCompatActivity {
                         if (response.isSuccessful() && response.body() != null) {
                             Usuario usuario = response.body();
                             // Login correcto, guardar sesión segura
-                            SessionManager.getInstance(LoginActivity.this)
-                                    .guardarSesion(usuario.getId(), usuario.getNombre(), usuario.getEmail(), usuario.getEdad(), usuario.getPosicion());
+                            SessionManager.getInstance(LoginActivity.this).guardarSesion(usuario);
 
                             Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                             intent.putExtra("nombre_usuario", usuario.getNombre());

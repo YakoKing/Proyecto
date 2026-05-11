@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#0D0D0D">
+    app:srcCompat="@drawable/fondo2" >
 
     <!-- Header Image -->
     <ImageView
@@ -17,18 +17,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnVolverAtras"
-        style="@style/Widget.Material3.Button.IconButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        app:icon="@drawable/flecha"
-        app:iconTint="#FFFFFF"
-        android:rotation="180"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
     <!-- Content Card -->
     <androidx.cardview.widget.CardView
@@ -47,7 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="24dp">
+            android:padding="28dp">
 
             <TextView
                 android:id="@+id/txtNombrePistaReserva"
@@ -61,76 +49,76 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:text="Complete los detalles de su partido"
                 android:textColor="#8C8C8C"
-                android:textSize="14sp"
-                android:layout_marginTop="4dp" />
+                android:textSize="14sp" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#333333"
-                android:layout_marginVertical="20dp" />
+                android:layout_marginVertical="20dp"
+                android:background="#333333" />
 
             <!-- Fecha -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:letterSpacing="0.1"
                 android:text="FECHA"
                 android:textColor="#00FF9C"
                 android:textSize="12sp"
-                android:textStyle="bold"
-                android:letterSpacing="0.1" />
+                android:textStyle="bold" />
 
             <EditText
                 android:id="@+id/etFecha"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Seleccionar fecha"
-                android:textColor="#FFFFFF"
-                android:textColorHint="#4DFFFFFF"
-                android:focusable="false"
+                android:backgroundTint="#333333"
                 android:clickable="true"
                 android:drawableStart="@drawable/home"
                 android:drawablePadding="12dp"
                 android:drawableTint="#00FF9C"
-                android:backgroundTint="#333333" />
+                android:focusable="false"
+                android:hint="Seleccionar fecha"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#4DFFFFFF" />
 
             <!-- Hora -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:letterSpacing="0.1"
                 android:text="HORA DE INICIO"
                 android:textColor="#00FF9C"
                 android:textSize="12sp"
-                android:textStyle="bold"
-                android:letterSpacing="0.1"
-                android:layout_marginTop="20dp" />
+                android:textStyle="bold" />
 
             <EditText
                 android:id="@+id/etHora"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Seleccionar hora"
-                android:textColor="#FFFFFF"
-                android:textColorHint="#4DFFFFFF"
-                android:focusable="false"
+                android:backgroundTint="#333333"
                 android:clickable="true"
                 android:drawableStart="@drawable/candado"
                 android:drawablePadding="12dp"
                 android:drawableTint="#00FF9C"
-                android:backgroundTint="#333333" />
+                android:focusable="false"
+                android:hint="Seleccionar hora"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#4DFFFFFF" />
 
             <!-- Tipo -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:letterSpacing="0.1"
                 android:text="TIPO DE PARTIDO"
                 android:textColor="#00FF9C"
                 android:textSize="12sp"
-                android:textStyle="bold"
-                android:letterSpacing="0.1"
-                android:layout_marginTop="20dp" />
+                android:textStyle="bold" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/layoutTipo"
@@ -138,20 +126,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:textColorHint="#4DFFFFFF"
                 app:boxBackgroundColor="#333333"
                 app:boxStrokeColor="#00FF9C"
-                app:hintEnabled="false"
-                android:textColorHint="#4DFFFFFF">
+                app:hintEnabled="false">
 
                 <AutoCompleteTextView
                     android:id="@+id/autoCompleteTipo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="none"
-                    android:text="Amistoso"
-                    android:textColor="#FFFFFF"
                     android:paddingTop="12dp"
-                    android:paddingBottom="12dp" />
+                    android:paddingBottom="12dp"
+                    android:text="Amistoso"
+                    android:textColor="#FFFFFF" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -162,12 +150,13 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="40dp"
         android:orientation="vertical"
-        android:layout_marginBottom="32dp"
         android:paddingHorizontal="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnConfirmarReserva"

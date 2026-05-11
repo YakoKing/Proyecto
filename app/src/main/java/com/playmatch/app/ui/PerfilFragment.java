@@ -60,25 +60,19 @@ public class PerfilFragment extends Fragment {
         etPosicion = view.findViewById(R.id.etPosicion);
         etCorreo = view.findViewById(R.id.etCorreo);
         txtNombreUsuario = view.findViewById(R.id.txtNombreUsuario);
+        txtReputacion = view.findViewById(R.id.txtReputacion);
+        imgAvatar = view.findViewById(R.id.imgAvatar);
 
-        // Uso de SessionManager para obtener datos de forma instantánea
-        SessionManager sessionManager = SessionManager.getInstance(requireContext());
-        int usuarioId = sessionManager.getUsuarioId();
-
-        // Rellenar datos locales inmediatamente para evitar el retardo visual
-        etNombre.setText(sessionManager.getNombre());
-        txtNombreUsuario.setText(sessionManager.getNombre());
-        etCorreo.setText(sessionManager.getEmail());
-        int edad = sessionManager.getEdad();
-        if (edad > 0) {
-            etEdad.setText(String.valueOf(edad));
-        }
-        if (sessionManager.getPosicion() != null) {
-            etPosicion.setText(sessionManager.getPosicion());
+        // Cargar datos desde caché inmediatamente
+        Usuario cachedUsuario = SessionManager.getInstance(requireContext()).getUsuario();
+        if (cachedUsuario != null) {
+            mostrarDatosUsuario(cachedUsuario);
         }
 
-        if (usuarioId != -1) {
-            cargarDatosUsuario(usuarioId);
+        // Refrescar desde el servidor
+        int userId = SessionManager.getInstance(requireContext()).getUsuarioId();
+        if (userId != -1) {
+            cargarDatosUsuario(userId);
         }
 
         btnGuardar.setOnClickListener(new View.OnClickListener() {
@@ -92,32 +86,35 @@ public class PerfilFragment extends Fragment {
         return view;
     }
 
+    private void mostrarDatosUsuario(Usuario usuario) {
+        if (usuario == null) return;
+        etNombre.setText(usuario.getNombre());
+        txtNombreUsuario.setText(usuario.getNombre());
+        etCorreo.setText(usuario.getEmail());
+        if (usuario.getEdad() > 0) {
+            etEdad.setText(String.valueOf(usuario.getEdad()));
+        }
+        if (usuario.getPosicion() != null && !usuario.getPosicion().isEmpty()) {
+            etPosicion.setText(usuario.getPosicion());
+        }
+        if (usuario.getReputacion() > 0) {
+            txtReputacion.setText("Reputación: " + String.format("%.1f", usuario.getReputacion()));
+        }
+    }
+
     private void cargarDatosUsuario(int id) {
         RetrofitCliente.getApiServicio().getUsuario(id).enqueue(new Callback<Usuario>() {
             @Override
             public void onResponse(Call<Usuario> call, Response<Usuario> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     Usuario usuario = response.body();
-                    //nombre y correo  campos obligatorios
-                    etNombre.setText(usuario.getNombre());
-                    txtNombreUsuario.setText(usuario.getNombre());
-                    etCorreo.setText(usuario.getEmail());
-                    if (usuario.getEdad() > 0) {
-                        etEdad.setText(String.valueOf(usuario.getEdad()));
-                    }
-                    if (usuario.getPosicion() != null && !usuario.getPosicion().isEmpty()) {
-                        etPosicion.setText(usuario.getPosicion());
-                    }
+                    
+                    // Actualizar UI con datos frescos
+                    mostrarDatosUsuario(usuario);
 
                     // Actualizar la sesión local con los datos frescos del servidor
                     if (getContext() != null) {
-                        SessionManager.getInstance(getContext()).guardarSesion(
-                                usuario.getId(),
-                                usuario.getNombre(),
-                                usuario.getEmail(),
-                                usuario.getEdad(),
-                                usuario.getPosicion()
-                        );
+                        SessionManager.getInstance(getContext()).guardarSesion(usuario);
                     }
 
                 } else {

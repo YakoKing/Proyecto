@@ -7,11 +7,12 @@
         android:icon="@android:drawable/ic_menu_search"
         android:title="Buscar"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
-        app:showAsAction="ifRoom|collapseActionView" />
+        app:showAsAction="ifRoom|collapseActionView"
+        app:iconTint="@color/camposPerfil" />
 
     <item
         android:id="@+id/action_filter"
-        android:icon="@drawable/settings"
+        android:icon="@drawable/ic_filter_funnel"
         android:title="Filtrar"
         app:showAsAction="always"
         app:iconTint="@color/camposPerfil" />

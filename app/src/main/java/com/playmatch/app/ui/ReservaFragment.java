@@ -14,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
@@ -65,7 +64,6 @@ public class ReservaFragment extends Fragment {
         autoCompleteTipo = view.findViewById(R.id.autoCompleteTipo);
         btnConfirmarReserva = view.findViewById(R.id.btnConfirmarReserva);
         btnCancelarReserva = view.findViewById(R.id.btnCancelarReserva);
-        btnVolverAtras = view.findViewById(R.id.btnVolverAtras);
 
         if (pista != null) {
             txtNombrePistaReserva.setText(pista.getNombre());
@@ -103,7 +101,6 @@ public class ReservaFragment extends Fragment {
         };
 
         btnCancelarReserva.setOnClickListener(volver);
-        btnVolverAtras.setOnClickListener(volver);
 
         btnConfirmarReserva.setOnClickListener(v -> {
             // Aquí irá la lógica de llamada a la API en el futuro
