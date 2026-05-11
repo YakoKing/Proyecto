@@ -64,6 +64,7 @@ public class AjustesFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 sessionManager.cerrarSesion();
+                // Volver a la pantalla de Login
                 Intent intent = new Intent(getActivity(), LoginActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
@@ -155,13 +156,15 @@ public class AjustesFragment extends Fragment {
                 new AlertDialog.Builder(requireContext()).setTitle("Eliminar cuenta")
                         .setMessage("¿Estas seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer")
                         .setPositiveButton("Eliminar" , (dialog, which) -> {
-                            int id = sessionManager.getUsuarioId();
+                            int id = SessionManager.getInstance(requireContext()).getUsuarioId();
 
                             RetrofitCliente.getApiServicio().eliminarUsuario(id).enqueue(new Callback<Map<String, String>>() {
                                 @Override
                                 public void onResponse(Call<Map<String, String>> call, Response<Map<String, String>> response) {
                                     if (response.isSuccessful()){
-                                        sessionManager.cerrarSesion();
+                                        //si la peticion es correcta borramos user de la base de datos
+                                        SessionManager.getInstance(requireContext()).cerrarSesion();
+                                        //volvemos al login
                                         Intent intent=new Intent(requireActivity(), LoginActivity.class);
                                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                         startActivity(intent);

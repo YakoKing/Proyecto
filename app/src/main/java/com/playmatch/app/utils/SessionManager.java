@@ -17,9 +17,9 @@ public class SessionManager {
     private static final String KEY_USER_EMAIL = "email";
     private static final String KEY_USER_EDAD ="edad";
     private static final String KEY_USER_POSICION ="posicion";
-    private static final String KEY_USER_AVATAR="avatarUrl";
-
-    private static final String KEY_USER_TELEFONO="telefono";
+    private static final String KEY_USER_REPUTACION = "reputacion";
+    private static final String KEY_USER_TELEFONO = "telefono";
+    private static final String KEY_USER_AVATAR = "avatar_url";
 
     private static SessionManager instance;
     private SharedPreferences sharedPreferences;
@@ -53,17 +53,19 @@ public class SessionManager {
         return instance;
     }
 
-    public void guardarSesion(int id, String nombre, String email, int edad, String posicion , String avatarUrl ,String telefono) {
+    public void guardarSesion(com.playmatch.app.entity.Usuario usuario) {
         sharedPreferences.edit()
-                .putInt(KEY_USER_ID, id)
-                .putString(KEY_USER_NAME, nombre)
-                .putString(KEY_USER_EMAIL, email)
-                .putInt(KEY_USER_EDAD, edad)
-                .putString(KEY_USER_POSICION, posicion)
-                .putString(KEY_USER_AVATAR, avatarUrl)
-                .putString(KEY_USER_TELEFONO, telefono)
+                .putInt(KEY_USER_ID, usuario.getId())
+                .putString(KEY_USER_NAME, usuario.getNombre())
+                .putString(KEY_USER_EMAIL, usuario.getEmail())
+                .putInt(KEY_USER_EDAD, usuario.getEdad())
+                .putString(KEY_USER_POSICION, usuario.getPosicion())
+                .putFloat(KEY_USER_REPUTACION, (float) usuario.getReputacion())
+                .putString(KEY_USER_TELEFONO, usuario.getTelefono())
+                .putString(KEY_USER_AVATAR, usuario.getAvatarUrl())
                 .apply();
     }
+
     public int getUsuarioId() {
         return sharedPreferences.getInt(KEY_USER_ID, -1);
     }
@@ -79,9 +81,31 @@ public class SessionManager {
 
     public String getPosicion(){return sharedPreferences.getString(KEY_USER_POSICION, "");}
 
-    public String getAvatar(){return sharedPreferences.getString(KEY_USER_AVATAR , "");}
+    public float getReputacion() {
+        return sharedPreferences.getFloat(KEY_USER_REPUTACION, 0.0f);
+    }
 
-    public String getTelefono(){return  sharedPreferences.getString(KEY_USER_TELEFONO , "");}
+    public String getTelefono() {
+        return sharedPreferences.getString(KEY_USER_TELEFONO, "");
+    }
+
+    public String getAvatarUrl() {
+        return sharedPreferences.getString(KEY_USER_AVATAR, "");
+    }
+
+    public com.playmatch.app.entity.Usuario getUsuario() {
+        if (!estaLogueado()) return null;
+        com.playmatch.app.entity.Usuario usuario = new com.playmatch.app.entity.Usuario();
+        usuario.setId(getUsuarioId());
+        usuario.setNombre(getNombre());
+        usuario.setEmail(getEmail());
+        usuario.setEdad(getEdad());
+        usuario.setPosicion(getPosicion());
+        usuario.setReputacion(getReputacion());
+        usuario.setTelefono(getTelefono());
+        usuario.setAvatarUrl(getAvatarUrl());
+        return usuario;
+    }
 
     public boolean estaLogueado() {
         return getUsuarioId() != -1;

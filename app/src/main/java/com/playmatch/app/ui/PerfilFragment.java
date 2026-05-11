@@ -1,6 +1,5 @@
 package com.playmatch.app.ui;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -13,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -82,30 +80,16 @@ public class PerfilFragment extends Fragment {
         SessionManager sessionManager = SessionManager.getInstance(requireContext());
         int usuarioId = sessionManager.getUsuarioId();
 
-        //Rellenar datos locales inmediatamente para evitar el retardo visual
-        etNombre.setText(sessionManager.getNombre());
-        txtNombreUsuario.setText(sessionManager.getNombre());
-        etCorreo.setText(sessionManager.getEmail());
-        int edad = sessionManager.getEdad();
-        if (edad > 0) {
-            etEdad.setText(String.valueOf(edad));
-        }
-        if (sessionManager.getPosicion() != null) {
-            etPosicion.setText(sessionManager.getPosicion());
+        // Cargar datos desde caché inmediatamente
+        Usuario cachedUsuario = SessionManager.getInstance(requireContext()).getUsuario();
+        if (cachedUsuario != null) {
+            mostrarDatosUsuario(cachedUsuario);
         }
 
-        String avatarUrl=sessionManager.getAvatar();
-        if (avatarUrl!=null && !avatarUrl.isEmpty()){
-            Glide.with(this).load(avatarUrl).into(imgAvatar);
-        }
-
-        if (sessionManager.getTelefono()!=null){
-            etTelefono.setText(sessionManager.getTelefono());
-        }
-
-
-        if (usuarioId != -1) {
-            cargarDatosUsuario(usuarioId);
+        // Refrescar desde el servidor
+        int userId = SessionManager.getInstance(requireContext()).getUsuarioId();
+        if (userId != -1) {
+            cargarDatosUsuario(userId);
         }
 
         btnGuardar.setOnClickListener(new View.OnClickListener() {
@@ -234,18 +218,35 @@ public class PerfilFragment extends Fragment {
                         etTelefono.setText(usuarioActual.getTelefono());
 
                     }
+    private void mostrarDatosUsuario(Usuario usuario) {
+        if (usuario == null) return;
+        etNombre.setText(usuario.getNombre());
+        txtNombreUsuario.setText(usuario.getNombre());
+        etCorreo.setText(usuario.getEmail());
+        if (usuario.getEdad() > 0) {
+            etEdad.setText(String.valueOf(usuario.getEdad()));
+        }
+        if (usuario.getPosicion() != null && !usuario.getPosicion().isEmpty()) {
+            etPosicion.setText(usuario.getPosicion());
+        }
+        if (usuario.getReputacion() > 0) {
+            txtReputacion.setText("Reputación: " + String.format("%.1f", usuario.getReputacion()));
+        }
+    }
+
+    private void cargarDatosUsuario(int id) {
+        RetrofitCliente.getApiServicio().getUsuario(id).enqueue(new Callback<Usuario>() {
+            @Override
+            public void onResponse(Call<Usuario> call, Response<Usuario> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Usuario usuario = response.body();
+
+                    // Actualizar UI con datos frescos
+                    mostrarDatosUsuario(usuario);
 
                     //Actualizar la sesión local con los datos frescos del servidor
                     if (getContext() != null) {
-                        SessionManager.getInstance(getContext()).guardarSesion(
-                                usuarioActual.getId(),
-                                usuarioActual.getNombre(),
-                                usuarioActual.getEmail(),
-                                usuarioActual.getEdad(),
-                                usuarioActual.getPosicion(),
-                                usuarioActual.getAvatarUrl(),
-                                usuarioActual.getTelefono()
-                        );
+                        SessionManager.getInstance(getContext()).guardarSesion(usuario);
                     }
 
                 } else {
@@ -262,6 +263,4 @@ public class PerfilFragment extends Fragment {
             }
         });
     }
-
-
 }

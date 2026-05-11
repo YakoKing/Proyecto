@@ -2,7 +2,6 @@ package com.playmatch.app.adaptadores;
 
 import android.content.Context;
 import android.content.ContextWrapper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +25,11 @@ public class PistaAdapter extends RecyclerView.Adapter<PistaAdapter.PistaViewHol
 
     public PistaAdapter(List<Pista> listaPistas) {
         this.listaPistas = listaPistas;
+    }
+
+    public void actualizarLista(List<Pista> nuevaLista) {
+        this.listaPistas = nuevaLista;
+        notifyDataSetChanged();
     }
 
     @NonNull

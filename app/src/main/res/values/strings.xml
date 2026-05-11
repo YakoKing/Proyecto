@@ -29,5 +29,9 @@
     <string name="gestiona_tu_cuenta_y_preferencias">Gestiona tu cuenta y preferencias</string>
     <string name="mar_a_rodr_guez">María Rodríguez</string>
     <string name="cambiar_contrase_a">Cambiar contraseña</string>
+    <string name="home">Home</string>
+    <string name="reservas">Reservas</string>
+    <string name="perfil">Perfil</string>
+    <string name="item_ajustes">Ajustes</string>
 
 </resources>
