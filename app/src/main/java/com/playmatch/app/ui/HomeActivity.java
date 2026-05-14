@@ -43,12 +43,9 @@ public class HomeActivity extends AppCompatActivity {
     private List<Pista> listaFiltrada;
     private PistaAdapter adapter;
 
-    // Estados de filtros
     private String queryActual = "";
     private String provinciaSeleccionada = "Todas";
-    private int ordenSeleccionado = 0; // 0: Sin orden, 1: Precio Asc, 2: Precio Desc
-
-
+    private int ordenSeleccionado = 0;
 
     private View layoutFiltros;
     private android.widget.Spinner spinnerProvincia;
@@ -68,16 +65,12 @@ public class HomeActivity extends AppCompatActivity {
 
         configurarVistaFiltros();
 
-        // Configurar el recyclerPistas
         recyclerPistas.setLayoutManager((new LinearLayoutManager(this)));
-
-        // Configurar el Toolbar como ActionBar para usar menús
         setSupportActionBar(BarTop);
 
-        // Cargar las pistas desde la api
         RetrofitCliente.getApiServicio().getPistas().enqueue(new Callback<List<Pista>>() {
             @Override
-            public void onResponse(Call<List<Pista>> call, Response<List<Pista>> response) {
+            public void onResponse(@NonNull Call<List<Pista>> call, @NonNull Response<List<Pista>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     listaOriginal = response.body();
                     listaFiltrada = new java.util.ArrayList<>(listaOriginal);
@@ -89,37 +82,41 @@ public class HomeActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<List<Pista>> call, Throwable t) {
+            public void onFailure(@NonNull Call<List<Pista>> call, @NonNull Throwable t) {
                 Log.e("PISTAS", "Error al cargar las pistas " + t.getMessage());
             }
         });
 
-        //Mostrar el nonbre guardado en Session manager en la barra
         String nombreUsuario = SessionManager.getInstance(this).getNombre();
         BarTop.setTitle("Bienvenido " + nombreUsuario);
 
-        // Pre-fetch de datos del usuario
         preFetchDatosUsuario();
 
-        // Fragments del menu
         BarMenu.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 int seleccionMenu = item.getItemId();
 
-                // Siempre ocultar el panel de filtros al cambiar de pestaña
                 if (layoutFiltros != null) {
                     layoutFiltros.setVisibility(View.GONE);
                 }
 
-                // Cuando estamos en inicio mostramos las pistas y ocultamos los fragments
                 if (seleccionMenu == R.id.nav_home) {
                     recyclerPistas.setVisibility(View.VISIBLE);
                     contenedorFragments.setVisibility(View.GONE);
                     BarTop.setVisibility(View.VISIBLE);
                     return true;
                 }
-                // Si pulsamos el item de perfil o ajustes ponemos visible su fragment y ocultamos las pistas
+                if (seleccionMenu == R.id.nav_reserva) {
+                    recyclerPistas.setVisibility(View.GONE);
+                    contenedorFragments.setVisibility(View.VISIBLE);
+                    BarTop.setVisibility(View.GONE);
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.contenedorFragments, new MisReservasFragment()).commit();
+                    return true;
+                }
                 if (seleccionMenu == R.id.nav_perfil) {
                     recyclerPistas.setVisibility(View.GONE);
                     contenedorFragments.setVisibility(View.VISIBLE);
@@ -154,7 +151,6 @@ public class HomeActivity extends AppCompatActivity {
         SearchView searchView = (SearchView) searchItem.getActionView();
         searchView.setQueryHint("Buscar pista por nombre...");
 
-        // Configurar colores del SearchView
         EditText searchEditText = searchView.findViewById(androidx.appcompat.R.id.search_src_text);
         if (searchEditText != null) {
             searchEditText.setTextColor(ContextCompat.getColor(this, R.color.camposPerfil));
@@ -174,11 +170,6 @@ public class HomeActivity extends AppCompatActivity {
         searchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(@NonNull MenuItem item) {
-                BarTop.post(() -> {
-                    if (BarTop.getNavigationIcon() != null) {
-                        BarTop.getNavigationIcon().setTint(ContextCompat.getColor(HomeActivity.this, R.color.camposPerfil));
-                    }
-                });
                 return true;
             }
 
@@ -217,32 +208,42 @@ public class HomeActivity extends AppCompatActivity {
         Button btnCancelar = layoutFiltros.findViewById(R.id.btnCancelar);
         Button btnAplicar = layoutFiltros.findViewById(R.id.btnAplicar);
 
-        // Configurar spinner con layout personalizado
         android.widget.ArrayAdapter<String> adapterSpinner = new android.widget.ArrayAdapter<>(this,
                 R.layout.spinner_item_filtros, opciones);
         adapterSpinner.setDropDownViewResource(R.layout.spinner_item_filtros);
         spinnerProvincia.setAdapter(adapterSpinner);
 
-        btnAplicar.setOnClickListener(v -> {
-            provinciaSeleccionada = spinnerProvincia.getSelectedItem().toString();
-            int checkedId = rgOrden.getCheckedRadioButtonId();
-            if (checkedId == R.id.rbPrecioAsc) ordenSeleccionado = 1;
-            else if (checkedId == R.id.rbPrecioDesc) ordenSeleccionado = 2;
-            else ordenSeleccionado = 0;
+        btnAplicar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                provinciaSeleccionada = spinnerProvincia.getSelectedItem().toString();
+                int checkedId = rgOrden.getCheckedRadioButtonId();
+                if (checkedId == R.id.rbPrecioAsc) ordenSeleccionado = 1;
+                else if (checkedId == R.id.rbPrecioDesc) ordenSeleccionado = 2;
+                else ordenSeleccionado = 0;
 
-            aplicarFiltrosYOrden();
-            layoutFiltros.setVisibility(View.GONE);
+                aplicarFiltrosYOrden();
+                layoutFiltros.setVisibility(View.GONE);
+            }
         });
 
-        btnCancelar.setOnClickListener(v -> layoutFiltros.setVisibility(View.GONE));
+        btnCancelar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                layoutFiltros.setVisibility(View.GONE);
+            }
+        });
 
-        btnLimpiar.setOnClickListener(v -> {
-            provinciaSeleccionada = "Todas";
-            ordenSeleccionado = 0;
-            spinnerProvincia.setSelection(opciones.length - 1); // Seleccionar "Todas"
-            rgOrden.check(R.id.rbSinOrden);
-            aplicarFiltrosYOrden();
-            layoutFiltros.setVisibility(View.GONE);
+        btnLimpiar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                provinciaSeleccionada = "Todas";
+                ordenSeleccionado = 0;
+                spinnerProvincia.setSelection(opciones.length - 1);
+                rgOrden.check(R.id.rbSinOrden);
+                aplicarFiltrosYOrden();
+                layoutFiltros.setVisibility(View.GONE);
+            }
         });
     }
 
@@ -280,8 +281,6 @@ public class HomeActivity extends AppCompatActivity {
             String ubicacion = p.getUbicacion() != null ? p.getUbicacion() : "";
 
             boolean cumpleNombre = nombre.contains(queryActual.toLowerCase());
-
-            // Si la ubicación contiene la provincia seleccionada (ej: "Murcia, Avenida...")
             boolean cumpleProvincia = provinciaSeleccionada.equals("Todas") ||
                     ubicacion.toLowerCase().contains(provinciaSeleccionada.toLowerCase());
 
@@ -292,9 +291,19 @@ public class HomeActivity extends AppCompatActivity {
 
         // Aplicar orden
         if (ordenSeleccionado == 1) {
-            java.util.Collections.sort(nuevaListaFiltrada, (p1, p2) -> Double.compare(p1.getPrecioHora(), p2.getPrecioHora()));
+            java.util.Collections.sort(nuevaListaFiltrada, new java.util.Comparator<Pista>() {
+                @Override
+                public int compare(Pista p1, Pista p2) {
+                    return Double.compare(p1.getPrecioHora(), p2.getPrecioHora());
+                }
+            });
         } else if (ordenSeleccionado == 2) {
-            java.util.Collections.sort(nuevaListaFiltrada, (p1, p2) -> Double.compare(p2.getPrecioHora(), p1.getPrecioHora()));
+            java.util.Collections.sort(nuevaListaFiltrada, new java.util.Comparator<Pista>() {
+                @Override
+                public int compare(Pista p1, Pista p2) {
+                    return Double.compare(p2.getPrecioHora(), p1.getPrecioHora());
+                }
+            });
         }
 
         listaFiltrada = nuevaListaFiltrada;
@@ -308,24 +317,21 @@ public class HomeActivity extends AppCompatActivity {
         if (userId != -1) {
             RetrofitCliente.getApiServicio().getUsuario(userId).enqueue(new Callback<Usuario>() {
                 @Override
-                public void onResponse(Call<Usuario> call, Response<Usuario> response) {
+                public void onResponse(@NonNull Call<Usuario> call, @NonNull Response<Usuario> response) {
                     if (response.isSuccessful() && response.body() != null) {
                         SessionManager.getInstance(HomeActivity.this).guardarSesion(response.body());
-                        Log.d("PREFETCH", "Datos de usuario actualizados");
                     }
                 }
 
                 @Override
-                public void onFailure(Call<Usuario> call, Throwable t) {
-                    Log.e("PREFETCH", "Error al pre-cargar datos: " + t.getMessage());
+                public void onFailure(@NonNull Call<Usuario> call, @NonNull Throwable t) {
+                    Log.e("PISTAS", "Error al pre-cargar datos");
                 }
             });
         }
     }
 
     public void abrirReserva(Pista pista) {
-
-        // Ocultar filtros si están abiertos al ir a reserva
         if (layoutFiltros != null) {
             layoutFiltros.setVisibility(View.GONE);
         }

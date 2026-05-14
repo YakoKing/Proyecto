@@ -9,20 +9,31 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
+import com.playmatch.app.ApiServicio.ReservaRequest;
+import com.playmatch.app.ApiServicio.RetrofitCliente;
 import com.playmatch.app.R;
 import com.playmatch.app.entity.Pista;
+import com.playmatch.app.entity.Reserva;
+import com.playmatch.app.utils.SessionManager;
 
 import java.util.Calendar;
 import java.util.Locale;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ReservaFragment extends Fragment {
 
@@ -31,7 +42,7 @@ public class ReservaFragment extends Fragment {
     private ImageView imgPistaReserva;
     private EditText etFecha, etHora;
     private AutoCompleteTextView autoCompleteTipo;
-    private Button btnConfirmarReserva, btnCancelarReserva, btnVolverAtras;
+    private Button btnConfirmarReserva, btnCancelarReserva;
 
     public ReservaFragment() {
     }
@@ -67,7 +78,6 @@ public class ReservaFragment extends Fragment {
 
         if (pista != null) {
             txtNombrePistaReserva.setText(pista.getNombre());
-            // Cargar imagen de la pista
             if (pista.getFoto() != null && !pista.getFoto().isEmpty()) {
                 Glide.with(this).load(pista.getFoto()).centerCrop()
                         .placeholder(R.drawable.pista_ejemplo).into(imgPistaReserva);
@@ -76,38 +86,104 @@ public class ReservaFragment extends Fragment {
             }
         }
 
-        // Configurar Dropdown Menu (antes Spinner)
         String[] tipos = {"Amistoso", "Competitivo", "Torneo"};
         if (getContext() != null) {
             ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, tipos);
             autoCompleteTipo.setAdapter(adapter);
         }
 
-        // Date Picker
-        etFecha.setOnClickListener(v -> mostrarDatePicker());
-
-        // Time Picker
-        etHora.setOnClickListener(v -> mostrarTimePicker());
-
-        View.OnClickListener volver = v -> {
-            if (getActivity() instanceof HomeActivity) {
-                HomeActivity activity = (HomeActivity) getActivity();
-                activity.getSupportFragmentManager().popBackStack();
-                // Restaurar visibilidad en HomeActivity
-                activity.findViewById(R.id.recyclerPistas).setVisibility(View.VISIBLE);
-                activity.findViewById(R.id.contenedorFragments).setVisibility(View.GONE);
-                activity.findViewById(R.id.BarTop).setVisibility(View.VISIBLE);
+        etFecha.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mostrarDatePicker();
             }
-        };
+        });
 
-        btnCancelarReserva.setOnClickListener(volver);
+        etHora.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mostrarTimePicker();
+            }
+        });
 
-        btnConfirmarReserva.setOnClickListener(v -> {
-            // Aquí irá la lógica de llamada a la API en el futuro
-            Toast.makeText(getContext(), "Reserva solicitada para " + pista.getNombre(), Toast.LENGTH_SHORT).show();
+        btnCancelarReserva.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (getActivity() instanceof HomeActivity) {
+                    HomeActivity activity = (HomeActivity) getActivity();
+                    activity.getSupportFragmentManager().popBackStack();
+                    activity.findViewById(R.id.recyclerPistas).setVisibility(View.VISIBLE);
+                    activity.findViewById(R.id.contenedorFragments).setVisibility(View.GONE);
+                    activity.findViewById(R.id.BarTop).setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        btnConfirmarReserva.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                confirmarReserva();
+            }
         });
 
         return view;
+    }
+
+    private void confirmarReserva() {
+        String fecha = etFecha.getText().toString();
+        final String hora = etHora.getText().toString();
+
+        if (fecha.isEmpty() || hora.isEmpty()) {
+            Toast.makeText(getContext(), "Por favor, completa fecha y hora", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        int usuarioId = SessionManager.getInstance(requireContext()).getUsuarioId();
+        long pistaId = pista.getId();
+        String horaFin = calcularHoraFin(hora);
+
+        ReservaRequest request = new ReservaRequest(usuarioId, pistaId, fecha, hora, horaFin);
+
+        RetrofitCliente.getApiServicio().crearReserva(request).enqueue(new Callback<Reserva>() {
+            @Override
+            public void onResponse(@NonNull Call<Reserva> call, @NonNull Response<Reserva> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(getContext(), "¡Reserva realizada con éxito!", Toast.LENGTH_LONG).show();
+                    volverAReservas();
+                } else {
+                    if (response.code() == 400) {
+                        Toast.makeText(getContext(), "Ya tienes una reserva en esa fecha", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(getContext(), "Error al reservar: " + response.code(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Reserva> call, @NonNull Throwable t) {
+                Toast.makeText(getContext(), "Fallo de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private String calcularHoraFin(String horaInicio) {
+        try {
+            String[] partes = horaInicio.split(":");
+            int hora = Integer.parseInt(partes[0]);
+            int minuto = Integer.parseInt(partes[1]);
+            hora = (hora + 1) % 24;
+            return String.format(Locale.getDefault(), "%02d:%02d", hora, minuto);
+        } catch (Exception e) {
+            return horaInicio;
+        }
+    }
+
+    private void volverAReservas() {
+        if (getActivity() instanceof HomeActivity) {
+            HomeActivity activity = (HomeActivity) getActivity();
+            activity.getSupportFragmentManager().popBackStack();
+            activity.findViewById(R.id.nav_reserva).performClick();
+        }
     }
 
     private void mostrarDatePicker() {
@@ -117,8 +193,15 @@ public class ReservaFragment extends Fragment {
         int day = c.get(Calendar.DAY_OF_MONTH);
 
         DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
-                (view, year1, monthOfYear, dayOfMonth) -> etFecha.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year1),
-                year, month, day);
+                new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year1, int monthOfYear, int dayOfMonth) {
+                        String fechaFormateada = String.format(Locale.getDefault(), "%04d-%02d-%02d", year1, monthOfYear + 1, dayOfMonth);
+                        etFecha.setText(fechaFormateada);
+                    }
+                }, year, month, day);
+        
+        datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
         datePickerDialog.show();
     }
 
@@ -128,8 +211,12 @@ public class ReservaFragment extends Fragment {
         int minute = c.get(Calendar.MINUTE);
 
         TimePickerDialog timePickerDialog = new TimePickerDialog(getContext(),
-                (view, hourOfDay, minute1) -> etHora.setText(String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute1)),
-                hour, minute, true);
+                new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute1) {
+                        etHora.setText(String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute1));
+                    }
+                }, hour, minute, true);
         timePickerDialog.show();
     }
 }

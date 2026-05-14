@@ -41,7 +41,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         tools:listitem="@layout/card_pista" />
 
-    <!-- Panel de Filtros Integrado (Superpuesto) -->
+    <!-- Panel de Filtros -->
     <include
         android:id="@+id/layoutFiltros"
         layout="@layout/dialog_filtros"

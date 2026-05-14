@@ -27,7 +27,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import com.bumptech.glide.Glide;
 
-
 public class PerfilFragment extends Fragment {
 
     private ImageView imgAvatar;
@@ -49,11 +48,9 @@ public class PerfilFragment extends Fragment {
             "https://i.imgur.com/ypjBhlR.png"
     };
 
-
     public PerfilFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -86,20 +83,57 @@ public class PerfilFragment extends Fragment {
             cargarDatosUsuario(userId);
         }
 
+        //boton guardar
         btnGuardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (usuarioActual != null) {
-                    // Actualizar objeto local con datos de los EditText
-                    usuarioActual.setNombre(etNombre.getText().toString());
-                    String edadStr = etEdad.getText().toString();
-                    usuarioActual.setEdad(Integer.parseInt(edadStr.isEmpty() ? "0" : edadStr));
-                    usuarioActual.setPosicion(etPosicion.getText().toString());
-                    usuarioActual.setTelefono(etTelefono.getText().toString());
-                    
-                    // Guardar en servidor
-                    actualizarDatosUsuario();
+
+                if (usuarioActual==null){
+                    return;
                 }
+
+                String nombre = etNombre.getText().toString();
+                String correo=etCorreo.getText().toString();
+                String posicion=etPosicion.getText().toString();
+                String telefono=etTelefono.getText().toString();
+                String edadStr=etEdad.getText().toString().trim();
+
+                //asignar valores nuevos al usuario
+                usuarioActual.setNombre(nombre);
+                if (!correo.contains("@") || !correo.contains(".")){
+                    etCorreo.setError("Formato de email no valido");
+                    return;
+                }
+                usuarioActual.setEmail(correo);
+                usuarioActual.setPosicion(posicion);
+                usuarioActual.setTelefono(telefono);
+                if (!edadStr.isEmpty()){
+                    int edad=Integer.parseInt(edadStr);
+                    if (edad<16 || edad>100){
+                        etEdad.setError("Introduce una edad vÃ¡lida");
+                        return;
+                    }
+                    usuarioActual.setEdad(Integer.parseInt(edadStr));
+                }
+
+                //obtener id del usuario logueado
+                int id=SessionManager.getInstance(requireContext()).getUsuarioId();
+                RetrofitCliente.getApiServicio().actualizarUsuario(id , usuarioActual).enqueue(new Callback<Usuario>() {
+                    @Override
+                    public void onResponse(Call<Usuario> call, Response<Usuario> response) {
+                        if(response.isSuccessful()){
+                            //texto debajo del avatar
+                            txtNombreUsuario.setText(nombre);
+                            SessionManager.getInstance(requireContext()).getUsuario();
+                            Toast.makeText(getContext(), "Perfil actualizado" , Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Usuario> call, Throwable t) {
+                        Toast.makeText(getContext(), "Error al guardar cambios" , Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
 
