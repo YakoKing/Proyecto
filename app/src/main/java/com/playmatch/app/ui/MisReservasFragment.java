@@ -58,6 +58,11 @@ public class MisReservasFragment extends Fragment {
         RetrofitCliente.getApiServicio().getReservasUsuario(usuarioId).enqueue(new Callback<List<Reserva>>() {
             @Override
             public void onResponse(@NonNull Call<List<Reserva>> call, @NonNull Response<List<Reserva>> response) {
+                // Seguridad: Comprobar si el fragmento sigue activo antes de tocar la UI
+                if (!isAdded() || getView() == null) {
+                    return;
+                }
+
                 if (response.isSuccessful() && response.body() != null) {
                     List<Reserva> lista = response.body();
                     

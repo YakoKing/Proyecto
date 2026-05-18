@@ -8,6 +8,11 @@
         android:title="@string/home" />
 
     <item
+        android:id="@+id/nav_partidos"
+        android:icon="@drawable/partidos"
+        android:title="Partidos" />
+
+    <item
         android:id="@+id/nav_reserva"
         android:icon="@drawable/reserva"
         android:title="@string/reservas" />

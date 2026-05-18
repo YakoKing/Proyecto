@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/action_search"
-        android:icon="@android:drawable/ic_menu_search"
+        android:icon="@drawable/search"
         android:title="Buscar"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="ifRoom|collapseActionView"
@@ -12,7 +12,7 @@
 
     <item
         android:id="@+id/action_filter"
-        android:icon="@drawable/ic_filter_funnel"
+        android:icon="@drawable/filter_list"
         android:title="Filtrar"
         app:showAsAction="always"
         app:iconTint="@color/camposPerfil" />

@@ -111,7 +111,11 @@ public class ReservasAdapter extends RecyclerView.Adapter<ReservasAdapter.Reserv
                     notifyItemRemoved(position);
                     notifyItemRangeChanged(position, listaReservas.size());
                 } else {
-                    Toast.makeText(context, "No se pudo cancelar la reserva", Toast.LENGTH_SHORT).show();
+                    if (response.code() == 404) {
+                        Toast.makeText(context, "Error: Esta reserva tiene un partido público. Bórralo primero.", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(context, "No se pudo cancelar la reserva (Error " + response.code() + ")", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
 

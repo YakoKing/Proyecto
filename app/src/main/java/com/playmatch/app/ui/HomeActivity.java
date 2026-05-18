@@ -14,8 +14,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import android.widget.Button;
-import android.widget.EditText;
-import androidx.core.content.ContextCompat;
 import androidx.appcompat.widget.SearchView;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -117,6 +115,16 @@ public class HomeActivity extends AppCompatActivity {
                             .replace(R.id.contenedorFragments, new MisReservasFragment()).commit();
                     return true;
                 }
+                if (seleccionMenu == R.id.nav_partidos) {
+                    recyclerPistas.setVisibility(View.GONE);
+                    contenedorFragments.setVisibility(View.VISIBLE);
+                    BarTop.setVisibility(View.GONE);
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.contenedorFragments, new PartidosFragment()).commit();
+                    return true;
+                }
                 if (seleccionMenu == R.id.nav_perfil) {
                     recyclerPistas.setVisibility(View.GONE);
                     contenedorFragments.setVisibility(View.VISIBLE);
@@ -149,23 +157,8 @@ public class HomeActivity extends AppCompatActivity {
 
         MenuItem searchItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) searchItem.getActionView();
+        assert searchView != null;
         searchView.setQueryHint("Buscar pista por nombre...");
-
-        EditText searchEditText = searchView.findViewById(androidx.appcompat.R.id.search_src_text);
-        if (searchEditText != null) {
-            searchEditText.setTextColor(ContextCompat.getColor(this, R.color.camposPerfil));
-            searchEditText.setHintTextColor(ContextCompat.getColor(this, R.color.colorHint));
-        }
-
-        ImageView searchIcon = searchView.findViewById(androidx.appcompat.R.id.search_mag_icon);
-        if (searchIcon != null) {
-            searchIcon.setColorFilter(ContextCompat.getColor(this, R.color.camposPerfil));
-        }
-
-        ImageView closeIcon = searchView.findViewById(androidx.appcompat.R.id.search_close_btn);
-        if (closeIcon != null) {
-            closeIcon.setColorFilter(ContextCompat.getColor(this, R.color.camposPerfil));
-        }
 
         searchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
             @Override
@@ -291,14 +284,14 @@ public class HomeActivity extends AppCompatActivity {
 
         // Aplicar orden
         if (ordenSeleccionado == 1) {
-            java.util.Collections.sort(nuevaListaFiltrada, new java.util.Comparator<Pista>() {
+            nuevaListaFiltrada.sort(new java.util.Comparator<Pista>() {
                 @Override
                 public int compare(Pista p1, Pista p2) {
                     return Double.compare(p1.getPrecioHora(), p2.getPrecioHora());
                 }
             });
         } else if (ordenSeleccionado == 2) {
-            java.util.Collections.sort(nuevaListaFiltrada, new java.util.Comparator<Pista>() {
+            nuevaListaFiltrada.sort(new java.util.Comparator<Pista>() {
                 @Override
                 public int compare(Pista p1, Pista p2) {
                     return Double.compare(p2.getPrecioHora(), p1.getPrecioHora());

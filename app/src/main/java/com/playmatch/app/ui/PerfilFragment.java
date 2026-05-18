@@ -83,20 +83,17 @@ public class PerfilFragment extends Fragment {
             cargarDatosUsuario(userId);
         }
 
-        //boton guardar
+        // Boton guardar
         btnGuardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if (usuarioActual==null){
-                    return;
-                }
+                if (usuarioActual == null) return;
 
                 String nombre = etNombre.getText().toString();
-                String correo=etCorreo.getText().toString();
-                String posicion=etPosicion.getText().toString();
-                String telefono=etTelefono.getText().toString();
-                String edadStr=etEdad.getText().toString().trim();
+                String correo = etCorreo.getText().toString();
+                String posicion = etPosicion.getText().toString();
+                String telefono = etTelefono.getText().toString();
+                String edadStr = etEdad.getText().toString().trim();
 
                 //asignar valores nuevos al usuario
                 usuarioActual.setNombre(nombre);
@@ -148,6 +145,8 @@ public class PerfilFragment extends Fragment {
     }
 
     private void mostrarSeleccionAvatar() {
+        if (!isAdded()) return;
+        
         View dialogo = LayoutInflater.from(requireContext()).inflate(R.layout.selector_avatares, null);
         ImageView iv1 = dialogo.findViewById(R.id.avatar1);
         ImageView iv2 = dialogo.findViewById(R.id.avatar2);
@@ -205,10 +204,14 @@ public class PerfilFragment extends Fragment {
     }
 
     private void actualizarDatosUsuario() {
+        if (!isAdded()) return;
+        
         int id = SessionManager.getInstance(requireContext()).getUsuarioId();
         RetrofitCliente.getApiServicio().actualizarUsuario(id, usuarioActual).enqueue(new Callback<Usuario>() {
             @Override
             public void onResponse(@NonNull Call<Usuario> call, @NonNull Response<Usuario> response) {
+                if (!isAdded() || getView() == null) return;
+
                 if (response.isSuccessful() && response.body() != null) {
                     usuarioActual = response.body();
                     mostrarDatosUsuario(usuarioActual);
@@ -219,16 +222,20 @@ public class PerfilFragment extends Fragment {
 
             @Override
             public void onFailure(@NonNull Call<Usuario> call, @NonNull Throwable t) {
-                if (getContext() != null)
-                    Toast.makeText(getContext(), "Error al guardar cambios", Toast.LENGTH_SHORT).show();
+                if (!isAdded() || getView() == null) return;
+                Toast.makeText(getContext(), "Error al guardar cambios", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void cargarDatosUsuario(int id) {
+        if (!isAdded()) return;
+
         RetrofitCliente.getApiServicio().getUsuario(id).enqueue(new Callback<Usuario>() {
             @Override
             public void onResponse(@NonNull Call<Usuario> call, @NonNull Response<Usuario> response) {
+                if (!isAdded() || getView() == null) return;
+
                 if (response.isSuccessful() && response.body() != null) {
                     usuarioActual = response.body();
                     mostrarDatosUsuario(usuarioActual);
@@ -242,13 +249,15 @@ public class PerfilFragment extends Fragment {
 
             @Override
             public void onFailure(@NonNull Call<Usuario> call, @NonNull Throwable t) {
+                if (!isAdded() || getView() == null) return;
                 Log.e("PERFIL", "Fallo de conexion: " + t.getMessage());
             }
         });
     }
 
     private void mostrarDatosUsuario(Usuario usuario) {
-        if (usuario == null) return;
+        if (usuario == null || !isAdded() || getView() == null) return;
+
         etNombre.setText(usuario.getNombre());
         txtNombreUsuario.setText(usuario.getNombre());
         etCorreo.setText(usuario.getEmail());

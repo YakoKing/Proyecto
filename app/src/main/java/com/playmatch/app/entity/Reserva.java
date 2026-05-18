@@ -5,6 +5,7 @@ public class Reserva {
     private int usuarioId;
     private int pistaId;
     private Pista pista;
+    private Usuario usuario; // Organizador
     private String fechaPartido;
     private String horaInicio;
     private String horaFin;
@@ -35,6 +36,9 @@ public class Reserva {
 
     public Pista getPista() { return pista; }
     public void setPista(Pista pista) { this.pista = pista; }
+
+    public Usuario getUsuario() { return usuario; }
+    public void setUsuario(Usuario usuario) { this.usuario = usuario; }
 
     public String getFechaPartido(){return fechaPartido;}
     public void setFechaPartido(String fechaPartido){this.fechaPartido=fechaPartido;}
